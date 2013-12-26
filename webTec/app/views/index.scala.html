@@ -1,0 +1,35 @@
+@(suchForm: Form[AngebotSuchen])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("HoeriMit") {
+
+@helper.form(action = routes.Login.login) {
+        
+        <fieldset>
+            <legend>Angebote suchen</legend>
+            
+            @inputText(
+                suchForm("startAdresse"), 
+                '_label -> "Von", 
+                '_placeholder -> "Please choose a valid username.",
+                '_error -> suchForm.error("startAdresseError")
+            )
+            
+            @inputText(
+                suchForm("zielAdresse"), 
+                '_label -> "Nach",
+                '_placeholder -> "A password must be at least 6 characters. ",
+                '_error -> suchForm.error("zielAdresseError")
+            )
+                  
+            
+        </fieldset>
+        <div class="actions">
+			 <input type="submit" class="btn primary" value="Angebote suchen">
+	         <a href="@routes.Registration.showRegistrationForm" class="btn">Noch nicht regestriert?</a>
+		</div>
+    }
+    <div id="result"></div>
+}

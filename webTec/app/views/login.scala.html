@@ -1,0 +1,54 @@
+@(loginForm: Form[User])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@title = {
+    Sign Up <small><a href="@routes.Login.login">Regestrieren</a></small>
+}
+
+@main("Anmelden") {
+
+<div class="starter-template">
+    <h1>Bitte hier anmelden</h1>
+</div>
+
+ 	@if(flash.get("errors") != null) {
+    <p class="alert alert-danger">
+        @flash.get("errors")
+    </p>
+    }
+   
+  @helper.form(action = routes.Login.login) {
+        
+        <fieldset>
+            <legend>Kontodetails</legend>
+            
+            @inputText(
+                loginForm("username"), 
+                '_label -> "Username", 
+                '_placeholder -> "Please choose a valid username.",
+                '_error -> loginForm.error("username")
+            )
+            
+
+            @inputPassword(
+                loginForm("password"), 
+                '_label -> "Password",
+                '_placeholder -> "A password must be at least 6 characters. "
+            )
+                  
+             @checkbox(
+                loginForm("remember"), 
+                '_label -> "Remember me"
+            )
+            <input type="hidden" value="a@@a.a" name="email" />
+            
+        </fieldset>
+        <div class="actions">
+			 <input type="submit" class="btn primary" value="Login">
+	         <a href="@routes.Registration.showRegistrationForm" class="btn">Noch nicht regestriert?</a>
+		</div>
+    }
+	
+}

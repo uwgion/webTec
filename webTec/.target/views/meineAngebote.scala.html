@@ -1,0 +1,43 @@
+@(Routes:  ArrayList[Route])
+
+@main("HöriMit") {
+<script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+		<div id="omm_thema-table" class="panel-group">
+		@for((key) <- Routes){
+
+			<div class="panel panel-default">
+				<div class="panel-heading">
+				  <h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#omm_thema-table" href="#@{key.startAdresse.fetch().name}@{key.zielAdresse.fetch().name}">
+				     Von: @{key.startAdresse.fetch().name} Nach: @{key.zielAdresse.fetch().name}
+				    </a>
+				  </h4>
+				</div>
+				<div id="@{key.startAdresse.fetch().name}@{key.zielAdresse.fetch().name}" class="panel-collapse collapse">
+					<div class="panel-body">
+					<div class="map-canvas"/>
+							<div class="actions">
+								<input type="hidden" class="id1" value="@{key._id}">
+								<input type="button" class="btn primary omm_delete-entry" value="Mitfahrgelegenheit eintragen.">
+							</div>
+				  	</div>
+				</div>
+			 </div>
+		}
+		</div>
+	<input type="hidden" id="foo" name="zyx" value="bar" />
+
+
+	<script type="text/javascript">
+
+		$(".omm_delete-entry").click(function(event){
+			var id = $(this).parent().find(".id1").val();
+			console.log(id);
+			jsRoutes.controllers.Angebote.destroyOffer(id).ajax({
+		        type:"DELETE"
+	        });
+			console.log("me");
+			//var id = $("#id1").val();
+		})
+	</script>
+}

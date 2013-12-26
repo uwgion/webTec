@@ -1,0 +1,22 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index()
+GET     /about                      controllers.Application.about()
+GET     /meineAngebote              controllers.Angebote.meineAngebote()
+GET     /angebotErstellen           controllers.Angebote.angebotErstellen()
+POST 	/angebotErstellen			controllers.Angebote.createRoute()
+DELETE 	/angebotErstellen/:Id		controllers.Angebote.destroyOffer(Id: String)
+GET 	/login						controllers.Login.showLoginForm()
+
+POST 	/login						controllers.Login.login()
+
+GET 	/logout						controllers.Application.logout()
+POST 	/registration				controllers.Registration.createUser()
+GET 	/registration				controllers.Registration.showRegistrationForm()
+
+GET     /assets/javascripts/routes          controllers.Application.javascriptRoutes()
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)

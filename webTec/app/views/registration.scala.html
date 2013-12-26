@@ -1,0 +1,57 @@
+@(signupForm: Form[User])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@title = {
+    Sign Up <small><a href="@routes.Registration.createUser">Regestrieren</a></small>
+}
+
+@main("Regestrierung") {
+    
+    @helper.form(action = routes.Registration.createUser) {
+        
+        <fieldset>
+            <legend>Konto erstellen</legend>
+            
+            @inputText(
+                signupForm("username"), 
+                '_label -> "Username", 
+                '_help -> "Please choose a valid username.",
+                '_error -> signupForm.error("username")
+            )
+            
+            @inputText(
+                signupForm("email"), '_label -> "Email",
+                '_help -> "Enter a valid email address.",
+                '_error -> signupForm.error("email")
+            )
+            
+            @inputPassword(
+                signupForm("password"), 
+                '_label -> "Password",
+                '_help -> "A password must be at least 6 characters. "
+            )
+            
+            @inputPassword(
+                signupForm("repeatPassword"), 
+                '_label -> "Repeat password",
+                '_help -> "Please repeat your password again.",
+                '_error -> signupForm.error("password")
+            )
+            
+             @checkbox(
+                signupForm("remember"), 
+                '_label -> "Remember me"
+            )
+            
+        </fieldset>
+        
+        <div class="actions">
+            <input type="submit" class="btn primary" value="Sign Up">
+            <a href="@routes.Application.index" class="btn">Cancel</a>
+        </div>
+        
+    }
+    
+}

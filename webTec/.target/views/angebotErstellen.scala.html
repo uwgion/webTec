@@ -1,0 +1,134 @@
+@(Routes:  ArrayList[Route])(angebotForm: Form[Route])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("HÃ¶riMit") {
+<div class="starter-template">
+    <h1>Aktuelle Angebote</h1>
+</div>
+	@if(flash.get("errors") != null) {
+    <p class="alert alert-danger">
+        @flash.get("errors")
+    </p>
+    }
+     @helper.form(action = routes.Angebote.createRoute) {
+       
+        <fieldset>
+            <legend>Kontodetails</legend>
+            
+            @inputText(
+                angebotForm("startAdresseForm"), 
+                '_label -> "Startadresse", 
+                '_placeholder -> "Please choose a valid username.",
+                '_error -> angebotForm.error("startAdresse")
+            )
+            
+			<div id="wegpunkte"></div>
+            
+            @inputText(
+                angebotForm("zielAdresseForm"), 
+                '_label -> "Zieladresse", 
+                '_placeholder -> "Please choose a valid username.",
+                '_error -> angebotForm.error("zielAdresse")
+            )
+            
+        </fieldset>
+        <div class="actions">
+			<input type="submit" class="btn primary" value="Mitfahrgelegenheit eintragen.">
+			<input type="button" id="wegPunkteHinzufuegen" class="btn primary" value="Wegpunkte hinfzufügen."></button>
+		</div>
+
+    }
+    
+<div id="map-canvas"/>
+
+
+<script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjsbaoEWBxF2oxvLEenqLjERjfJICyyWg&sensor=true">
+</script>
+<script type="text/javascript">
+    function initialize() {
+        var mapOptions = {
+        center: new google.maps.LatLng(47.693934,8.946791),
+        zoom: 13,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+    	};
+        var map = new google.maps.Map(document.getElementById("map-canvas"),
+        mapOptions);
+        google.maps.event.addListener(map, 'click', function(event) {
+            placeMarker(event.latLng, map);
+        });
+
+		@if(Routes != null){
+			//iterate over routes
+			 @for(x <- 0 until Routes.size()){
+				 console.log(@Routes.size());
+				var lat = @Routes.get(x).startAdresse.fetch().latitude();
+				var lng = @Routes.get(x).startAdresse.fetch().longitude();
+				var start = new google.maps.LatLng(lng, lat);
+				console.log(lat + ","+ lng);
+				lat = @Routes.get(x).zielAdresse.fetch().latitude();
+				lng = @Routes.get(x).zielAdresse.fetch().longitude();
+				var end = new google.maps.LatLng(lng, lat);
+				console.log(lat + ","+ lng);
+				var waypoint;
+				 //iterate over markers for routes
+				 
+				 
+				 var request = {
+					origin:start,
+					destination:end,
+					waypoints: [
+								@for(z <- 0 until Routes.get(x).wegpunkte.size()){
+									@{
+										  "{ location: new google.maps.LatLng("+Routes.get(x).wegpunkte.get(z).fetch.longitude()+
+												  ","+ Routes.get(x).wegpunkte.get(z).fetch.latitude()+
+												  "), stopover:true },"
+										}
+								}
+					          ],
+					travelMode: google.maps.TravelMode.DRIVING
+				};
+	         }
+			calcRoute(request, map);
+		}
+    }
+
+    function calcRoute(request, map){
+    	 var directionsDisplay;
+    	 var directionsService = new google.maps.DirectionsService();
+    	  
+    	 directionsDisplay = new google.maps.DirectionsRenderer();
+    	 directionsDisplay.setMap(map);
+    	 directionsService.route(request, function(result, status) {
+    		    if (status == google.maps.DirectionsStatus.OK) {
+    		      console.log("route. " +result);
+    		      directionsDisplay.setDirections(result);
+    		    }else{
+
+    		       console.log("route failed. status:" +status +" result:" +result);
+    		    }
+    		  });
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+    function placeMarker(location, map) {
+      var marker = new google.maps.Marker({
+          position: location,
+          map: map
+      });
+    }
+    //set counter for additional waypoints, delimiter will be "//"
+    var counter = 0;
+    $("#wegPunkteHinzufuegen").click(function(){
+    	counter += 1;
+    	var html = $("#wegpunkte").html();
+    	html += '<div class="clearfix"><label for="wegpunkte'+counter+'">Über</label>';
+    	html += '<div class="input"><input name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="Über Adresse"></div>';
+    	html += '<span class="help-block">Required</span></div>';
+    	$("#wegpunkte").html(html);
+
+    });
+    </script>
+}
