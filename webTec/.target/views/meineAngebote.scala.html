@@ -1,43 +1,139 @@
 @(Routes:  ArrayList[Route])
 
 @main("HÃ¶riMit") {
-<script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+	@if(flash.get("success") != null) {
+    <p class="alert alert-success">
+        @flash.get("success")
+    </p>
+    }
 		<div id="omm_thema-table" class="panel-group">
+		
 		@for((key) <- Routes){
-
-			<div class="panel panel-default">
+			<div class="panel panel-default" id="@{key._id}">
 				<div class="panel-heading">
 				  <h4 class="panel-title">
-				    <a data-toggle="collapse" data-parent="#omm_thema-table" href="#@{key.startAdresse.fetch().name}@{key.zielAdresse.fetch().name}">
-				     Von: @{key.startAdresse.fetch().name} Nach: @{key.zielAdresse.fetch().name}
+				    <a data-toggle="collapse" data-parent="#omm_thema-table" href="#@{key._id}1">
+				     <span class="omm_von">Von:</span> @{key.startAdresse.fetch().name} <span class="omm_nach">Nach:</span> @{key.zielAdresse.fetch().name}
 				    </a>
 				  </h4>
 				</div>
-				<div id="@{key.startAdresse.fetch().name}@{key.zielAdresse.fetch().name}" class="panel-collapse collapse">
+				<div class="panel-collapse collapse" id="@{key._id}1">
 					<div class="panel-body">
-					<div class="map-canvas"/>
-							<div class="actions">
-								<input type="hidden" class="id1" value="@{key._id}">
-								<input type="button" class="btn primary omm_delete-entry" value="Mitfahrgelegenheit eintragen.">
+						<table class="table table-striped table-hover">
+							<tbody><tr class="row">
+							
+							<td class="col-lg-6"><div id="map-canvas@{key._id}" style="height:400px; min-width:400px"></div></td>
+								<td class="col-lg-6"><div class="omm_route-details">
+									<span class="omm_von">Von:</span> @{key.startAdresse.fetch().name} <br/>
+										@for(z <- 0 until key.wegpunkteForm.size()){
+											Über: @key.wegpunkteForm.get(z)<br/>
+										}
+									<span class="omm_nach">Nach:</span> @{key.zielAdresse.fetch().name}<br/>
+								</div>
+								<div class="omm_start-end-waypoints">
+								<input type="hidden" class="omm_start-address" value="@{key.startAdresse.fetch().latitude}/@{key.startAdresse.fetch().longitude}">
+								<input type="hidden" class="omm_waypoints-address" value="@for(z <- 0 until key.wegpunkte.size()){@key.wegpunkte.get(z).fetch.latitude()
+												  /@key.wegpunkte.get(z).fetch.longitude()//}">
+								<input type="hidden" class="omm_destination-address" value="@{key.zielAdresse.fetch().latitude}/@{key.zielAdresse.fetch().longitude}">
 							</div>
+							<div class="actions">
+								<input type="hidden" class="omm_value-offer" value="@{key._id}">
+								<a href="@routes.Angebote.angebotAendernForm(key._id)" role="button"><input type="button" class="btn primary omm_update-entry" value="Eintrag ändern"></a>
+								<input type="button" class="btn primary omm_delete-entry" value="Mitfahrgelegenheit löschen.">
+							</div></td>
+							</tr></tbody>
+				  		</table>
 				  	</div>
 				</div>
 			 </div>
 		}
 		</div>
 	<input type="hidden" id="foo" name="zyx" value="bar" />
-
+<script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjsbaoEWBxF2oxvLEenqLjERjfJICyyWg&sensor=true">
+</script>
 
 	<script type="text/javascript">
 
 		$(".omm_delete-entry").click(function(event){
-			var id = $(this).parent().find(".id1").val();
-			console.log(id);
-			jsRoutes.controllers.Angebote.destroyOffer(id).ajax({
-		        type:"DELETE"
-	        });
-			console.log("me");
-			//var id = $("#id1").val();
-		})
+			if (confirm('Diese Mitfahrgelegenheit wirklich löschen?')) {
+				var id = $(this).parent().find(".omm_value-offer").val();
+
+				jsRoutes.controllers.Angebote.destroyOffer(id).ajax({
+			        type:"DELETE",
+			        success: function(){
+			        		$("#"+id).remove();
+			        	}
+			        });
+				}
+		});
+		$(".panel-title").click(function(event){
+			var map;
+		    function initialize() {
+
+		        var mapOptions = {
+		        center: new google.maps.LatLng(47.693934,8.946791),
+		        zoom: 13,
+		            mapTypeId: google.maps.MapTypeId.ROADMAP
+		    	};
+				
+		        var eventID = $(event.target).parents(".panel.panel-default").attr('id');
+
+		       	map = new google.maps.Map(document.getElementById("map-canvas"+eventID), mapOptions);
+
+				var tempAddress= $('#'+eventID).find('.omm_start-address').val().split("/");
+				
+				var lat = tempAddress[0];
+				var lng = tempAddress[1];
+				var start = new google.maps.LatLng(lng, lat);
+				tempAddress= $('#'+eventID).find(".omm_destination-address").val().split("/");
+
+				lat = tempAddress[0];
+				lng = tempAddress[1];
+				var end = new google.maps.LatLng(lng, lat);
+
+				var waypointsLatLng = $('#'+eventID).find('.omm_waypoints-address').val().split("//");
+
+				var waypoints = new Array();
+
+				 //iterate over markers for routes
+				for (var i=0;i<waypointsLatLng.length-1;i++){
+					var waypoint = waypointsLatLng[i].split("/");
+					waypoints.push({location:new google.maps.LatLng(waypoint[1], waypoint[0]),stopover:true})
+				}
+				 var request = {
+					origin:start,
+					destination:end,
+					 waypoints: waypoints,
+					travelMode: google.maps.TravelMode.DRIVING
+					};
+				calcRoute(request, map);
+		    }
+
+		    function calcRoute(request, map){
+		    	 var directionsDisplay;
+		    	 var directionsService = new google.maps.DirectionsService();
+		    	  
+		    	 directionsDisplay = new google.maps.DirectionsRenderer();
+		    	 directionsDisplay.setMap(map);
+		    	 directionsService.route(request, function(result, status) {
+		    		    if (status == google.maps.DirectionsStatus.OK) {
+		    		      	directionsDisplay.setDirections(result);
+		    		      	
+		  		       		google.maps.event.addListenerOnce(map, 'idle', function() {
+		 		       	   		google.maps.event.trigger(map, 'resize');
+		 		       	   		var bounds = result.routes[0].bounds;
+		    		      		map.fitBounds(bounds);
+		    		      		map.setCenter(bounds.getCenter());
+		 		       		});
+		    		    }else{
+
+		    		       console.log("route failed. status:" +status +" result:" +result);
+		    		    }
+		    		  });
+		    }
+		    initialize();
+		});
+	
 	</script>
 }

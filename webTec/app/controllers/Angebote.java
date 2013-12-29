@@ -1,5 +1,6 @@
 package controllers;
 
+import helpers.AddressNotFoundException;
 import helpers.RouteAndMarkerHelpers;
 
 import java.util.ArrayList;
@@ -69,12 +70,22 @@ public class Angebote extends Controller{
 			if(tempRoute._id.equals(id)){
 				List<DBRef<Marker, String>> markerList = tempRoute.wegpunkte;
 
+				//delete the start address marker
+				markers.delete(tempRoute.startAdresse.fetch()._id);
+				
+				//delete the destination address marker
+				markers.delete(tempRoute.zielAdresse.fetch()._id);
+				
+				//delete all waypoint markers
 				for(int z = 0; z < markerList.size(); z++){
 					Marker tempMarker = markerList.get(z).fetch();
 					markers.delete(tempMarker._id);
+					Logger.info(z+"sdfsdsdg");
 				}
+				//remove the route from the users collection
 				user.routes.remove(i);
 				users.save(user);
+				//delete the route
 				routes.delete(tempRoute._id);
 				break;
 			}
@@ -92,10 +103,76 @@ public class Angebote extends Controller{
     	UserDB users = UserDB.getInstance();
 		ArrayList<Route> routesList = users.getRoutesForUser(session().get("sessionID"));
 		
-		
 		return ok(meineAngebote.render(routesList));
     }
     
+    public static Result angebotAendernForm(String id){
+
+    	Route tempRoute = buildRequestedOffer(id);
+
+    	Form<Route> responseData = Form.form(Route.class);
+    	Form<Route> responseDataFilled = responseData.fill(tempRoute);
+    	
+		return ok(angebotAendern.render(tempRoute, responseDataFilled));
+    }
+    
+    /**
+     * Method to fill the form for the route to be changed.
+     * @param id Id of the route to be changed.
+     * @return The filled form.
+     */
+    public static Route buildRequestedOffer(String id){
+    	RouteDB routes = RouteDB.getInstance();
+    	Route tempRoute = routes.findById(id);
+    	tempRoute.startAdresseForm = tempRoute.startAdresse.fetch().name;
+    	tempRoute.zielAdresseForm = tempRoute.zielAdresse.fetch().name;
+    	
+    	
+    	return tempRoute;
+    }
+    /**
+     * Method to change an existing offer.
+     * @param id The id of the offer to change.
+     * @return The updated offer list.
+     */
+    public static Result angebotAendern(String id){
+    	Form<Route> requestData = Form.form(Route.class);
+    	String sessionID = session().get("sessionID");
+    	requestData = requestData.bindFromRequest();
+
+    	UserDB users = UserDB.getInstance();
+    	RouteDB routes = RouteDB.getInstance();
+    	MarkerDB markers = MarkerDB.getInstance();
+    	
+    	//get the user who triggered the request
+    	User user = users.findByLoggedInHashKey(sessionID);
+    	//get routes for the given user
+    	
+		List<DBRef<Route, String>> routesList = user.routes;
+    	if(requestData.hasErrors()){
+    		return badRequest();
+    	}
+    	
+    	HashMap<String, String> requestMap = (HashMap<String, String>) requestData.data();
+
+    	try{
+    		routeListCreator.updateRoute(id, requestMap, routes, markers, routesList);
+    	}catch(AddressNotFoundException e){
+    		flash("errors","Ungültige Adresse eingegeben.");
+    		Route tempRoute = buildRequestedOffer(id);
+        	Form<Route> responseData = Form.form(Route.class);
+        	Form<Route> responseDataFilled = responseData.fill(tempRoute);
+    		return badRequest(angebotAendern.render(tempRoute, responseDataFilled));
+    	}
+    	
+		flash("success","Angebot erfolgreich gespeichert.");
+		return redirect(controllers.routes.Angebote.meineAngebote());
+
+	}
+
+
+
+
 	/**
      * Method to create a route. Reads a start address, beginning address
      * and if available additional waypoints
@@ -105,10 +182,8 @@ public class Angebote extends Controller{
     	String sessionID = session().get("sessionID");
     	//DynamicForm requestData = Form.form().bindFromRequest();
     	Form<Route> requestData = Form.form(Route.class);
-    	RouteDB routes = RouteDB.getInstance();
         UserDB users = UserDB.getInstance();
 
-		DBCursor<Route> cursor =  routes.findNative(new BasicDBObject());
 		ArrayList<Route> routesList = users.getRoutesForUser(sessionID);
 		
     	requestData = requestData.bindFromRequest();
@@ -130,9 +205,14 @@ public class Angebote extends Controller{
 	    	
 	        //get instances
 	        RouteDB routesInstance = RouteDB.getInstance();
-	       
+	        Route tempRoute;
+	    	try{
+		        tempRoute  = routeListCreator.createRouteFromSubmittedMarkers(markers);
+	    	}catch(AddressNotFoundException e){
+	    		flash("errors","Ungültige Adresse eingegeben.");
+				return badRequest(angebotErstellen.render(routesList, requestData));
+	    	}
 	        //let 'em build our route and get it
-	        Route tempRoute  = routeListCreator.createRouteFromSubmittedMarkers(markers);
 	        
 	        //get the current user which we need later one to give him the route
 	        User tempUser = users.findByLoggedInHashKey(sessionID);
@@ -143,15 +223,12 @@ public class Angebote extends Controller{
 	        DBRef<Route, String> routeDBRef = new DBRef<Route, String>(tempPersistetRoute._id, Route.class);
 
 
-	        tempUser.routes.add(routeDBRef);
-//	        boolean me = tempUser.routes.add(routeDBRef);
-//	        Logger.info(me+"");
-//	        Logger.info(tempUser.routes.size()+"size nach");
-//	        
+	        tempUser.routes.add(routeDBRef);    
 	        users.save(tempUser);
 	        
 	        routesList = users.getRoutesForUser(sessionID);
-	        return ok(angebotErstellen.render(routesList, Form.form(Route.class)));
+	    	flash("success","Angebot erfolgreich erstellt.");
+	        return redirect(controllers.routes.Angebote.meineAngebote());
 	    }
     }
 }

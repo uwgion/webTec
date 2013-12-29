@@ -63,7 +63,6 @@
 		@if(Routes != null){
 			//iterate over routes
 			 @for(x <- 0 until Routes.size()){
-				 console.log(@Routes.size());
 				var lat = @Routes.get(x).startAdresse.fetch().latitude();
 				var lng = @Routes.get(x).startAdresse.fetch().longitude();
 				var start = new google.maps.LatLng(lng, lat);
@@ -119,7 +118,7 @@
           map: map
       });
     }
-    //set counter for additional waypoints, delimiter will be "//"
+    //set counter for additional waypoints
     var counter = 0;
     $("#wegPunkteHinzufuegen").click(function(){
     	counter += 1;

@@ -10,7 +10,6 @@ import play.Routes;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.Security.Authenticated;
 import views.html.about;
 import views.html.index;
 
@@ -56,6 +55,7 @@ public class Application extends Controller {
     public static Result javascriptRoutes() {
         response().setContentType("text/javascript");
         return ok(Routes.javascriptRouter("jsRoutes",
-        controllers.routes.javascript.Angebote.destroyOffer()));	
+        controllers.routes.javascript.Angebote.destroyOffer(),
+        controllers.routes.javascript.Angebote.angebotAendern()));	
     }
 }

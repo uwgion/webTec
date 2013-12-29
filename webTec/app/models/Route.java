@@ -26,5 +26,6 @@ public class Route extends Entity{
     
     public Route(){
     	wegpunkte = new LinkedList<>();
+    	wegpunkteForm = new LinkedList<>();
     }
 }

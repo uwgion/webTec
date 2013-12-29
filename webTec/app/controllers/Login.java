@@ -6,10 +6,8 @@ import models.User;
 
 import org.mongojack.DBCursor;
 
-import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 import views.html.login;
 
@@ -67,6 +65,7 @@ public class Login extends Controller {
 					response().setCookie("sessionID", loggedIn, 604800);
 				}
 				session().put("sessionID", loggedIn);
+				session().put("username", user.username);
 
 				cursor.close();
 

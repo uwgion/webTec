@@ -1,7 +1,11 @@
 @(Routes:  ArrayList[Route])
 
 @main("HÃ¶riMit") {
-<script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+	@if(flash.get("success") != null) {
+    <p class="alert alert-success">
+        @flash.get("success")
+    </p>
+    }
 		<div id="omm_thema-table" class="panel-group">
 		
 		@for((key) <- Routes){
@@ -9,22 +13,32 @@
 				<div class="panel-heading">
 				  <h4 class="panel-title">
 				    <a data-toggle="collapse" data-parent="#omm_thema-table" href="#@{key._id}1">
-				     <span class="omm_von">Von:<span> @{key.startAdresse.fetch().name} <span class="omm_nach">Nach:</span> @{key.zielAdresse.fetch().name}
+				     <span class="omm_von">Von:</span> @{key.startAdresse.fetch().name} <span class="omm_nach">Nach:</span> @{key.zielAdresse.fetch().name}
 				    </a>
 				  </h4>
 				</div>
 				<div class="panel-collapse collapse" id="@{key._id}1">
 					<div class="panel-body">
 						<table class="table table-striped table-hover">
-							<tbody><tr style="height: 200px">
+							<tbody><tr class="row">
 							
-							<td style="width: 200px""><div id="map-canvas@{key._id}" style="width: 400px; height:400px"></div></td>
-							<td><div class="omm_start-end-waypoints">
+							<td class="col-lg-6"><div id="map-canvas@{key._id}" style="height:400px; min-width:400px"></div></td>
+								<td class="col-lg-6"><div class="omm_route-details">
+									<span class="omm_von">Von:</span> @{key.startAdresse.fetch().name} <br/>
+										@for(z <- 0 until key.wegpunkteForm.size()){
+											Über: @key.wegpunkteForm.get(z)<br/>
+										}
+									<span class="omm_nach">Nach:</span> @{key.zielAdresse.fetch().name}<br/>
+								</div>
+								<div class="omm_start-end-waypoints">
 								<input type="hidden" class="omm_start-address" value="@{key.startAdresse.fetch().latitude}/@{key.startAdresse.fetch().longitude}">
+								<input type="hidden" class="omm_waypoints-address" value="@for(z <- 0 until key.wegpunkte.size()){@key.wegpunkte.get(z).fetch.latitude()
+												  /@key.wegpunkte.get(z).fetch.longitude()//}">
 								<input type="hidden" class="omm_destination-address" value="@{key.zielAdresse.fetch().latitude}/@{key.zielAdresse.fetch().longitude}">
 							</div>
 							<div class="actions">
 								<input type="hidden" class="omm_value-offer" value="@{key._id}">
+								<a href="@routes.Angebote.angebotAendernForm(key._id)" role="button"><input type="button" class="btn primary omm_update-entry" value="Eintrag ändern"></a>
 								<input type="button" class="btn primary omm_delete-entry" value="Mitfahrgelegenheit löschen.">
 							</div></td>
 							</tr></tbody>
@@ -53,7 +67,8 @@
 			        });
 				}
 		});
-		$(".panel-heading").click(function(event){
+		$(".panel-title").click(function(event){
+			var map;
 		    function initialize() {
 
 		        var mapOptions = {
@@ -62,11 +77,12 @@
 		            mapTypeId: google.maps.MapTypeId.ROADMAP
 		    	};
 				
-		        var eventID = $(event.target).parents().find(".panel.panel-default").attr('id');
-		        var map = new google.maps.Map(document.getElementById("map-canvas"+eventID), mapOptions);
-	
-				var tempAddress= $('#'+eventID).find('.omm_start-address').val().split("/");
+		        var eventID = $(event.target).parents(".panel.panel-default").attr('id');
 
+		       	map = new google.maps.Map(document.getElementById("map-canvas"+eventID), mapOptions);
+
+				var tempAddress= $('#'+eventID).find('.omm_start-address').val().split("/");
+				
 				var lat = tempAddress[0];
 				var lng = tempAddress[1];
 				var start = new google.maps.LatLng(lng, lat);
@@ -76,14 +92,19 @@
 				lng = tempAddress[1];
 				var end = new google.maps.LatLng(lng, lat);
 
-				var waypoint;
+				var waypointsLatLng = $('#'+eventID).find('.omm_waypoints-address').val().split("//");
+
+				var waypoints = new Array();
+
 				 //iterate over markers for routes
-				 
-				 
+				for (var i=0;i<waypointsLatLng.length-1;i++){
+					var waypoint = waypointsLatLng[i].split("/");
+					waypoints.push({location:new google.maps.LatLng(waypoint[1], waypoint[0]),stopover:true})
+				}
 				 var request = {
 					origin:start,
 					destination:end,
-					
+					 waypoints: waypoints,
 					travelMode: google.maps.TravelMode.DRIVING
 					};
 				calcRoute(request, map);
@@ -97,7 +118,14 @@
 		    	 directionsDisplay.setMap(map);
 		    	 directionsService.route(request, function(result, status) {
 		    		    if (status == google.maps.DirectionsStatus.OK) {
-		    		      directionsDisplay.setDirections(result);
+		    		      	directionsDisplay.setDirections(result);
+		    		      	
+		  		       		google.maps.event.addListenerOnce(map, 'idle', function() {
+		 		       	   		google.maps.event.trigger(map, 'resize');
+		 		       	   		var bounds = result.routes[0].bounds;
+		    		      		map.fitBounds(bounds);
+		    		      		map.setCenter(bounds.getCenter());
+		 		       		});
 		    		    }else{
 
 		    		       console.log("route failed. status:" +status +" result:" +result);

@@ -1,17 +1,18 @@
 package controllers;
 
 
+import models.User;
+
 import org.mongojack.DBCursor;
 
-import com.mongodb.BasicDBObject;
-
-import models.User;
-import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.registration;
+
+import com.mongodb.BasicDBObject;
+
 import db.UserDB;
-import views.html.*;
 
 /**
  * Created by Kazakor on 23.12.13.
@@ -73,10 +74,11 @@ public class Registration extends Controller{
 			 if(form.get().remember == true){
 				response().setCookie("sessionID", loggedIn, 604800);
 			 }
-			 session().put("sessionID", loggedIn);
+			 
 
 		   	 users.create(newUser);          
-
+		   	 session().put("sessionID", loggedIn);
+			 session().put("username", newUser.username);
 		     return redirect(routes.Application.index());
 	     }       
 	 }

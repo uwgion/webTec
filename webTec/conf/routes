@@ -8,6 +8,8 @@ GET     /about                      controllers.Application.about()
 GET     /meineAngebote              controllers.Angebote.meineAngebote()
 GET     /angebotErstellen           controllers.Angebote.angebotErstellen()
 POST 	/angebotErstellen			controllers.Angebote.createRoute()
+GET 	/angebotAendern/:Id			controllers.Angebote.angebotAendernForm(Id: String)
+POST 	/angebotAendern/:Id			controllers.Angebote.angebotAendern(Id: String)
 DELETE 	/angebotErstellen/:Id		controllers.Angebote.destroyOffer(Id: String)
 GET 	/login						controllers.Login.showLoginForm()
 
