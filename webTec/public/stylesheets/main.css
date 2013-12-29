@@ -12,3 +12,7 @@ margin-bottom: 20px;
 .omm_navbar-buttons li {
     border-right: 1px solid rgb(75, 75, 75);
 }
+
+.row{
+	padding: 15px;
+}

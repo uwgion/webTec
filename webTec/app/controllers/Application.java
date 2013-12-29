@@ -56,6 +56,6 @@ public class Application extends Controller {
         response().setContentType("text/javascript");
         return ok(Routes.javascriptRouter("jsRoutes",
         controllers.routes.javascript.Angebote.destroyOffer(),
-        controllers.routes.javascript.Angebote.angebotAendern()));	
+        controllers.routes.javascript.Angebote.changeOffer()));	
     }
 }

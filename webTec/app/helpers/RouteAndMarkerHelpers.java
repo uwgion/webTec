@@ -146,19 +146,18 @@ public class RouteAndMarkerHelpers {
 		RouteDB routes = RouteDB.getInstance();
 		for(int z = 0; z < waypoints.size(); z++){
 			if(z < route.wegpunkte.size()){
-				Logger.info("muh");
-
 				if(!waypoints.get(z).equals(route.wegpunkte.get(z).fetch().name)){
 					tempPromise = singleAddressStringToGoogleAddress(waypoints.get(z));				
 					tempMarker = createNewMarkerFromString(tempPromise, "wegpunkt"+z);
 					markers.delete(route.wegpunkte.get(z).fetch()._id);
+					route.wegpunkteForm.set(z, tempMarker.name);
 					route.wegpunkte.set(z, new DBRef<Marker, String>(tempMarker._id, Marker.class));
 				}
 			}else{
-				Logger.info("meh");
 				tempPromise = singleAddressStringToGoogleAddress(waypoints.get(z));				
 				tempMarker = createNewMarkerFromString(tempPromise, "wegpunkt"+z);
 				route.wegpunkte.add(new DBRef<Marker, String>(tempMarker._id, Marker.class));
+				route.wegpunkteForm.add(tempMarker.name);
 			}
 		}
 		routes.save(route);

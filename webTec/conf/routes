@@ -5,11 +5,12 @@
 # Home page
 GET     /                           controllers.Application.index()
 GET     /about                      controllers.Application.about()
-GET     /meineAngebote              controllers.Angebote.meineAngebote()
-GET     /angebotErstellen           controllers.Angebote.angebotErstellen()
+GET     /meineAngebote              controllers.Angebote.myOffers()
+GET     /angebotErstellen           controllers.Angebote.createOffer()
 POST 	/angebotErstellen			controllers.Angebote.createRoute()
-GET 	/angebotAendern/:Id			controllers.Angebote.angebotAendernForm(Id: String)
-POST 	/angebotAendern/:Id			controllers.Angebote.angebotAendern(Id: String)
+GET     /angebotAnzeigen/:Id        controllers.Angebote.displayOffer(Id: String)
+GET 	/angebotAendern/:Id			controllers.Angebote.changeOfferForm(Id: String)
+POST 	/angebotAendern/:Id			controllers.Angebote.changeOffer(Id: String)
 DELETE 	/angebotErstellen/:Id		controllers.Angebote.destroyOffer(Id: String)
 GET 	/login						controllers.Login.showLoginForm()
 

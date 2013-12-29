@@ -35,12 +35,23 @@ import db.UserDB;
 public class Angebote extends Controller{
 	static RouteAndMarkerHelpers routeListCreator = new RouteAndMarkerHelpers();
 
+	/**
+	 * Method to display an existing offer.
+	 * @param id The id of the offer to display.
+	 * @return The page to display the offer.
+	 */
+	public static Result displayOffer(String id){
+		RouteDB routes = RouteDB.getInstance();
+    	Route tempRoute = routes.findById(id);
+    	
+    	return ok(angebotAnzeigen.render(tempRoute));
+	}
     /**
      * Method to return a list of all routes in the database. 
      * Those routes will then be display on the map.
      * @return The Angebote page with a list of all markers in the database.
      */
-    public static Result  angebotErstellen(){
+    public static Result  createOffer(){
 		Form<Route> form = Form.form(Route.class);
 
     	RouteDB routes = RouteDB.getInstance();
@@ -98,7 +109,7 @@ public class Angebote extends Controller{
      * Method to return a list of the users routes in the database. 
      * @return The Angebote page with a list of all markers in the database.
      */
-    public static Result  meineAngebote(){
+    public static Result  myOffers(){
 
     	UserDB users = UserDB.getInstance();
 		ArrayList<Route> routesList = users.getRoutesForUser(session().get("sessionID"));
@@ -106,7 +117,7 @@ public class Angebote extends Controller{
 		return ok(meineAngebote.render(routesList));
     }
     
-    public static Result angebotAendernForm(String id){
+    public static Result changeOfferForm(String id){
 
     	Route tempRoute = buildRequestedOffer(id);
 
@@ -135,7 +146,7 @@ public class Angebote extends Controller{
      * @param id The id of the offer to change.
      * @return The updated offer list.
      */
-    public static Result angebotAendern(String id){
+    public static Result changeOffer(String id){
     	Form<Route> requestData = Form.form(Route.class);
     	String sessionID = session().get("sessionID");
     	requestData = requestData.bindFromRequest();
@@ -166,7 +177,7 @@ public class Angebote extends Controller{
     	}
     	
 		flash("success","Angebot erfolgreich gespeichert.");
-		return redirect(controllers.routes.Angebote.meineAngebote());
+		return redirect(controllers.routes.Angebote.myOffers());
 
 	}
 
@@ -228,7 +239,7 @@ public class Angebote extends Controller{
 	        
 	        routesList = users.getRoutesForUser(sessionID);
 	    	flash("success","Angebot erfolgreich erstellt.");
-	        return redirect(controllers.routes.Angebote.meineAngebote());
+	        return redirect(controllers.routes.Angebote.myOffers());
 	    }
     }
 }
