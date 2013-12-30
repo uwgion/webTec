@@ -3,7 +3,7 @@ package db;
 import org.bson.types.ObjectId;
 import org.mongojack.JacksonDBCollection;
 
-import play.Logger;
+
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;

@@ -9,6 +9,7 @@ import org.mongojack.DBRef;
 import play.data.validation.Constraints;
 
 public class User extends Entity{
+	public boolean driver;
 	@Constraints.Required
 	@Constraints.Email
 	public String email;

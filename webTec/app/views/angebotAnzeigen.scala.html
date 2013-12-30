@@ -1,0 +1,111 @@
+@(Route:  Route)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("HÃ¶riMit") {
+<div class="starter-template">
+    <h1>Aktuelle Angebote</h1>
+</div>
+	@if(flash.get("errors") != null) {
+    <p class="alert alert-danger">
+        @flash.get("errors")
+    </p>
+    }
+	<div class="row">
+		<div id="map-canvas-single-offer" class="col-md-6" style="height:400px">
+		</div>
+		<div class="omm_route-details col-md-6">
+			<span class="omm_von">Von:</span> @{Route.startAdresse.fetch().name} <br/>
+						@for(z <- 0 until Route.wegpunkteForm.size()){
+							Über: @Route.wegpunkteForm.get(z)<br/>
+						}
+			<span class="omm_nach">Nach:</span> @{Route.zielAdresse.fetch().name}<br/>
+			<div class="omm_start-end-waypoints">
+				<input type="hidden" class="omm_start-address" value="@{Route.startAdresse.fetch().latitude}/@{Route.startAdresse.fetch().longitude}">
+				<input type="hidden" class="omm_waypoints-address" value="@for(z <- 0 until Route.wegpunkte.size()){@Route.wegpunkte.get(z).fetch.latitude()
+									  /@Route.wegpunkte.get(z).fetch.longitude()//}">
+				<input type="hidden" class="omm_destination-address" value="@{Route.zielAdresse.fetch().latitude}/@{Route.zielAdresse.fetch().longitude}">
+			</div>
+			<div class="actions">
+				<input type="hidden" class="omm_value-offer" value="@{Route._id}">
+				<a href="@routes.Angebote.changeOfferForm(Route._id)" role="button"><input type="button" class="btn primary omm_update-entry" value="Eintrag ändern"></a>
+				<input type="button" class="btn primary omm_delete-entry" value="Mitfahrgelegenheit löschen.">
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjsbaoEWBxF2oxvLEenqLjERjfJICyyWg&sensor=true">
+	</script>
+    <script type="text/javascript">
+	$(document).ready(function(){
+		var map;
+	    function initialize() {
+
+	        var mapOptions = {
+	        center: new google.maps.LatLng(47.693934,8.946791),
+	        zoom: 13,
+	            mapTypeId: google.maps.MapTypeId.ROADMAP
+	    	};
+			
+
+	       	map = new google.maps.Map(document.getElementById("map-canvas-single-offer"), mapOptions);
+
+			var tempAddress= $(document).find('.omm_start-address').val().split("/");
+			
+			var lat = tempAddress[0];
+			var lng = tempAddress[1];
+			var start = new google.maps.LatLng(lng, lat);
+			tempAddress= $(document).find(".omm_destination-address").val().split("/");
+
+			lat = tempAddress[0];
+			lng = tempAddress[1];
+			var end = new google.maps.LatLng(lng, lat);
+
+			var waypointsLatLng = $(document).find('.omm_waypoints-address').val().split("//");
+
+			var waypoints = new Array();
+
+			 //iterate over markers for routes
+			for (var i=0;i<waypointsLatLng.length-1;i++){
+				var waypoint = waypointsLatLng[i].split("/");
+				waypoints.push({location:new google.maps.LatLng(waypoint[1], waypoint[0]),stopover:true})
+			}
+			 var request = {
+				origin:start,
+				destination:end,
+				 waypoints: waypoints,
+				travelMode: google.maps.TravelMode.DRIVING
+				};
+			calcRoute(request, map);
+	    }
+
+	    function calcRoute(request, map){
+	    	 var directionsDisplay;
+	    	 var directionsService = new google.maps.DirectionsService();
+	    	  
+	    	 directionsDisplay = new google.maps.DirectionsRenderer();
+	    	 directionsDisplay.setMap(map);
+	    	 directionsService.route(request, function(result, status) {
+	    		    if (status == google.maps.DirectionsStatus.OK) {
+	    		      	directionsDisplay.setDirections(result);
+	    		      	
+	  		       		google.maps.event.addListenerOnce(map, 'idle', function() {
+	 		       	   		google.maps.event.trigger(map, 'resize');
+	 		       	   		var bounds = result.routes[0].bounds;
+	    		      		map.fitBounds(bounds);
+	    		      		map.setCenter(bounds.getCenter());
+	 		       		});
+	    		    }else{
+
+	    		       console.log("route failed. status:" +status +" result:" +result);
+	    		    }
+	    		  });
+	    }
+	    initialize();
+	});
+
+
+
+    </script>
+ }

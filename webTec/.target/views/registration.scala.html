@@ -39,7 +39,10 @@
                 '_help -> "Please repeat your password again.",
                 '_error -> signupForm.error("password")
             )
-            
+            @checkbox(
+                signupForm("driver"), 
+                '_label -> "Fahrer"
+            )
              @checkbox(
                 signupForm("remember"), 
                 '_label -> "Remember me"

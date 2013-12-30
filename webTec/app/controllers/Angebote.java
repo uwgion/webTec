@@ -19,6 +19,9 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security.Authenticated;
+import play.mvc.With;
+import authenticators.Driver;
+import authenticators.Secured;
 
 import com.mongodb.BasicDBObject;
 
@@ -51,6 +54,7 @@ public class Angebote extends Controller{
      * Those routes will then be display on the map.
      * @return The Angebote page with a list of all markers in the database.
      */
+	@With({Driver.class})
     public static Result  createOffer(){
 		Form<Route> form = Form.form(Route.class);
 
@@ -117,6 +121,7 @@ public class Angebote extends Controller{
 		return ok(meineAngebote.render(routesList));
     }
     
+	@With({Driver.class})
     public static Result changeOfferForm(String id){
 
     	Route tempRoute = buildRequestedOffer(id);
@@ -132,7 +137,7 @@ public class Angebote extends Controller{
      * @param id Id of the route to be changed.
      * @return The filled form.
      */
-    public static Route buildRequestedOffer(String id){
+    private static Route buildRequestedOffer(String id){
     	RouteDB routes = RouteDB.getInstance();
     	Route tempRoute = routes.findById(id);
     	tempRoute.startAdresseForm = tempRoute.startAdresse.fetch().name;
@@ -146,6 +151,7 @@ public class Angebote extends Controller{
      * @param id The id of the offer to change.
      * @return The updated offer list.
      */
+	@With({Driver.class})
     public static Result changeOffer(String id){
     	Form<Route> requestData = Form.form(Route.class);
     	String sessionID = session().get("sessionID");
@@ -189,6 +195,7 @@ public class Angebote extends Controller{
      * and if available additional waypoints
      * @return The confirmation page for creating a route.
      */
+	@With({Driver.class})
     public static Result createRoute(){
     	String sessionID = session().get("sessionID");
     	//DynamicForm requestData = Form.form().bindFromRequest();

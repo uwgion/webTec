@@ -1,0 +1,75 @@
+@(Route:  Route)(angebotForm: Form[Route])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("HÃ¶riMit") {
+<div class="starter-template">
+    <h1>Aktuelle Angebote</h1>
+</div>
+	@if(flash.get("errors") != null) {
+    <p class="alert alert-danger">
+        @flash.get("errors")
+    </p>
+    }
+     @helper.form(action = routes.Angebote.changeOffer(Route._id), 'Id -> "changeForm") {
+       
+        <fieldset>
+            <legend>Kontodetails</legend>
+            
+            @inputText(
+                angebotForm("startAdresseForm"), 
+                '_label -> "Startadresse", 
+                '_error -> angebotForm.error("startAdresse")
+            )
+            
+            @for(key <- 0 to Route.wegpunkte.size()-1){
+            	<div class="clearfix" id="wegpunkt@{key}_field">
+				    <label for="wegpunkt@{key}">Wegpunkt @{key+1}</label>
+				    <div class="input">		        
+				    <input id="wegpunkt@{key}" name="wegpunkt@{key}" value="@{Route.wegpunkteForm.get(key)}" type="text">			
+				        <span class="help-inline"></span>
+				        <span class="help-block">Required</span> 
+				    </div>
+				</div>
+            }
+			<div id="wegpunkte"></div>
+            
+            @inputText(
+                angebotForm("zielAdresseForm"), 
+                '_label -> "Zieladresse", 
+                '_error -> angebotForm.error("zielAdresse")
+            )
+            
+        </fieldset>
+        <div class="actions">
+			<input type="submit" class="btn primary" id="abschicken" value="Mitfahrgelegenheit ändern.">
+			<input type="hidden" value=@{Route._id} class="omm_value-offer">
+			<input type="button" id="wegPunkteHinzufuegen" class="btn primary" value="Wegpunkte hinfzufügen.">
+		</div>
+
+    }
+    <script type="text/javascript">
+    
+     //set counter for additional waypoints, delimiter will be "//"
+    var counter = 0;
+    $("#wegPunkteHinzufuegen").click(function(){
+    	counter += 1;
+    	var html = $("#wegpunkte").html();
+    	html += '<div class="clearfix"><label for="wegpunkte'+counter+'">Über</label>';
+    	html += '<div class="input"><input name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="Über Adresse"></div>';
+    	html += '<span class="help-block">Required</span></div>';
+    	$("#wegpunkte").html(html);
+
+    });
+/*	$("#abschicken").click(function(event){
+		event.preventDefault();
+		var id = $(this).parent().find(".omm_value-offer").val();
+		console.log(id);
+		jsRoutes.controllers.Angebote.angebotAendern(id).ajax({
+			data:$("#changeForm").serialize(),
+	        type:"PUT"
+        });
+	}); */
+    </script>
+ }

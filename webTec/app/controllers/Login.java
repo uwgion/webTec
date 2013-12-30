@@ -64,6 +64,11 @@ public class Login extends Controller {
 					//set the max age of the cookie to 1 week
 					response().setCookie("sessionID", loggedIn, 604800);
 				}
+				if(user.driver){
+					session().put("driver", "true");
+				}else{
+					session().put("driver", "false");
+				}
 				session().put("sessionID", loggedIn);
 				session().put("username", user.username);
 

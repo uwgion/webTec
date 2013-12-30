@@ -70,13 +70,18 @@ public class Registration extends Controller{
 	    	 User newUser = form.get();
 			 String loggedIn = Math.random()+"";
 			 newUser.loggedInHashKey = loggedIn;
+		   	 users.create(newUser);          
 
 			 if(form.get().remember == true){
 				response().setCookie("sessionID", loggedIn, 604800);
 			 }
-			 
 
-		   	 users.create(newUser);          
+			 if(newUser.driver){
+				session().put("driver", "true");
+			 }else{
+				session().put("driver", "false");
+			 }
+
 		   	 session().put("sessionID", loggedIn);
 			 session().put("username", newUser.username);
 		     return redirect(routes.Application.index());

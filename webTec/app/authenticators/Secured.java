@@ -1,9 +1,7 @@
-package controllers;
+package authenticators;
 
-import org.mongojack.DBCursor;
 
-import com.mongodb.BasicDBObject;
-
+import controllers.routes;
 import db.UserDB;
 import play.*;
 import play.mvc.*;
