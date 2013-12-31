@@ -3,6 +3,7 @@ package controllers;
 import helpers.AddressNotFoundException;
 import helpers.RouteAndMarkerHelpers;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -225,12 +226,25 @@ public class Angebote extends Controller{
 	        RouteDB routesInstance = RouteDB.getInstance();
 	        Route tempRoute;
 	    	try{
+	    		new Route().setDateTime(markers.get("timeForm"), markers.get("dateForm"));
 		        tempRoute  = routeListCreator.createRouteFromSubmittedMarkers(markers);
+		        tempRoute.seats = Integer.parseInt(markers.get("seats"));
+		        tempRoute.setDateTime(markers.get("timeForm"), markers.get("dateForm"));
+		        tempRoute.timeForm=markers.get("timeForm");
+		        tempRoute.dateForm=markers.get("dateForm");
 	    	}catch(AddressNotFoundException e){
 	    		flash("errors","Ungültige Adresse eingegeben.");
 				return badRequest(angebotErstellen.render(routesList, requestData));
 	    	}
-	        //let 'em build our route and get it
+
+	    	catch (ParseException e) {
+	    		if(e.toString().matches(".*Date in past.")){
+		    		flash("errors","Datum oder Uhrzeit in der Vergangenheit.");
+	    		}else{
+	    			flash("errors","Ungültiges Datums- oder Uhrzeitformt eingegeben.");
+	    		}
+				return badRequest(angebotErstellen.render(routesList, requestData));
+			}
 	        
 	        //get the current user which we need later one to give him the route
 	        User tempUser = users.findByLoggedInHashKey(sessionID);

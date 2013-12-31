@@ -6,11 +6,6 @@
 @main("HoeriMit") {
 
 @helper.form(action = routes.Login.login) {
- 	@if(flash.get("errors") != null) {
-    <p class="alert alert-danger">
-        @flash.get("errors")
-    </p>
-    }
         <fieldset>
             <legend>Angebote suchen</legend>
             

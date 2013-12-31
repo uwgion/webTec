@@ -7,11 +7,7 @@
 <div class="starter-template">
     <h1>Aktuelle Angebote</h1>
 </div>
-	@if(flash.get("errors") != null) {
-    <p class="alert alert-danger">
-        @flash.get("errors")
-    </p>
-    }
+
      @helper.form(action = routes.Angebote.createRoute) {
        
         <fieldset>
@@ -30,6 +26,25 @@
                 angebotForm("zielAdresseForm"), 
                 '_label -> "Zieladresse", 
                 '_placeholder -> "Please choose a valid username.",
+                '_error -> angebotForm.error("zielAdresse")
+            )
+            
+            @inputText(
+                angebotForm("timeForm"), 
+                '_label -> "Zeit", 
+                '_placeholder -> "Bitte eine Uhrzeit eingeben.",
+                '_error -> angebotForm.error("zeit")
+            )
+            @inputText(
+                angebotForm("dateForm"), 
+                '_label -> "Datum", 
+                '_placeholder -> "Bitte ein Datum eingeben.",
+                '_error -> angebotForm.error("datum")
+            )
+            @inputText(
+                angebotForm("seats"), 
+                '_label -> "Sitze", 
+                '_placeholder -> "Bitte verfügbare Sitzplätze eingeben.",
                 '_error -> angebotForm.error("zielAdresse")
             )
             

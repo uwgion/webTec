@@ -13,11 +13,6 @@
     <h1>Bitte hier anmelden</h1>
 </div>
 
- 	@if(flash.get("errors") != null) {
-    <p class="alert alert-danger">
-        @flash.get("errors")
-    </p>
-    }
    
   @helper.form(action = routes.Login.login) {
         

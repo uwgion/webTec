@@ -1,0 +1,11 @@
+
+@if(flash.get("success") != null) {
+   <p class="alert alert-success">
+       @flash.get("success")
+   </p>
+}
+ @if(flash.get("errors") != null) {
+   <p class="alert alert-danger">
+       @flash.get("errors")
+   </p>
+}

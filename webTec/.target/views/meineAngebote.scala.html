@@ -1,12 +1,9 @@
 @(Routes:  ArrayList[Route])
 
 @main("HÃ¶riMit") {
-	@if(flash.get("success") != null) {
-    <p class="alert alert-success">
-        @flash.get("success")
-    </p>
-    }
-		<div id="omm_thema-table" class="panel-group">
+
+	
+	<div id="omm_thema-table" class="panel-group">
 		
 		@for((key) <- Routes){
 			<div class="panel panel-default" id="@{key._id}">
@@ -19,33 +16,36 @@
 				</div>
 				<div class="panel-collapse collapse" id="@{key._id}1">
 					<div class="panel-body">
-						<table class="table table-striped table-hover">
-							<tbody><tr class="row">
+						<div class="row">
 							
-							<td class="col-lg-6"><div id="map-canvas@{key._id}" style="height:400px; min-width:400px"></div></td>
-								<td class="col-lg-6"><div class="omm_route-details">
+							<div id="map-canvas@{key._id}" class="col-lg-6" style="height:400px;">
+							</div>
+							<div class="col-lg-6">
+								<div class="omm_route-details">
+									<span class="omm_dateTime">Am @{key.dateForm} um @{key.timeForm}</span><br/>
 									<span class="omm_von">Von:</span> @{key.startAdresse.fetch().name} <br/>
 										@for(z <- 0 until key.wegpunkteForm.size()){
 											Über: @key.wegpunkteForm.get(z)<br/>
 										}
 									<span class="omm_nach">Nach:</span> @{key.zielAdresse.fetch().name}<br/>
+									<span class="omm_seats">Freie Sitzplätze:</span> @{key.seats}<br/>					
 								</div>
 								<div class="omm_start-end-waypoints">
-								<input type="hidden" class="omm_start-address" value="@{key.startAdresse.fetch().latitude}/@{key.startAdresse.fetch().longitude}">
-								<input type="hidden" class="omm_waypoints-address" value="@for(z <- 0 until key.wegpunkte.size()){@key.wegpunkte.get(z).fetch.latitude()
-												  /@key.wegpunkte.get(z).fetch.longitude()//}">
-								<input type="hidden" class="omm_destination-address" value="@{key.zielAdresse.fetch().latitude}/@{key.zielAdresse.fetch().longitude}">
-							</div>
-							<div class="actions">
-								<input type="hidden" class="omm_value-offer" value="@{key._id}">
-								<a href="@routes.Angebote.changeOfferForm(key._id)" role="button"><input type="button" class="btn primary omm_update-entry" value="Eintrag ändern"></a>
-								<input type="button" class="btn primary omm_delete-entry" value="Mitfahrgelegenheit löschen.">
-							</div></td>
-							</tr></tbody>
-				  		</table>
-				  	</div>
-				</div>
-			 </div>
+									<input type="hidden" class="omm_start-address" value="@{key.startAdresse.fetch().latitude}/@{key.startAdresse.fetch().longitude}">
+									<input type="hidden" class="omm_waypoints-address" value="@for(z <- 0 until key.wegpunkte.size()){@key.wegpunkte.get(z).fetch.latitude()
+													  /@key.wegpunkte.get(z).fetch.longitude()//}">
+									<input type="hidden" class="omm_destination-address" value="@{key.zielAdresse.fetch().latitude}/@{key.zielAdresse.fetch().longitude}">
+								</div>
+								<div class="actions">
+									<input type="hidden" class="omm_value-offer" value="@{key._id}">
+									<a href="@routes.Angebote.changeOfferForm(key._id)" role="button"><input type="button" class="btn primary omm_update-entry" value="Eintrag ändern"></a>
+									<input type="button" class="btn primary omm_delete-entry" value="Mitfahrgelegenheit löschen.">
+								</div>
+				  			</div>
+						</div>
+			 		</div>
+			 	</div>
+		 	</div>
 		}
 		</div>
 	<input type="hidden" id="foo" name="zyx" value="bar" />
@@ -63,6 +63,7 @@
 			        type:"DELETE",
 			        success: function(){
 			        		$("#"+id).remove();
+			        		$(".omm_content").prepend('<div class="alert alert-success"><i class="glyphicon glyphicon-remove"></i> &nbsp;Angebot erfolgreich gelöscht.</div>');
 			        	}
 			        });
 				}
