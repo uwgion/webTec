@@ -3,16 +3,13 @@ package db;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.mongojack.DBCursor;
-import org.mongojack.DBRef;
-
+import models.Request;
+import models.Route;
+import models.User;
 import play.Logger;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
-
-import models.Route;
-import models.User;
 
 
 public class UserDB extends Finder<User>{
@@ -66,6 +63,24 @@ public class UserDB extends Finder<User>{
 
 		return tempList;
 	}
+	
+	/**
+	 * Method to fetch all requests for a user, identified by his sessionID
+	 * @param LoggedInHashKey The sessionID key.
+	 * @return An ArrayList with all his requests.
+	 */
+	public ArrayList<Request> getRequestsForUser(String LoggedInHashKey){
+		User tempUser = findByLoggedInHashKey(LoggedInHashKey);
+		ArrayList<Request> tempList = new ArrayList<>();
+		Logger.info(tempUser.requests.size()+"");
+		for(int z = 0; z < tempUser.requests.size(); z++){
+			Logger.info("adding shit");
+			tempList.add(tempUser.requests.get(z).fetch());
+		}
+
+		return tempList;
+	}
+	
 	public static UserDB getInstance(){
 		return instance;
 	}

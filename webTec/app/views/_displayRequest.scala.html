@@ -1,0 +1,27 @@
+@(Request: Request)(what: String)
+
+<div class="row">
+	
+	</div>
+	<div>
+		<div class="omm_request-details col-md-6">
+			<span class="omm_request-from">Von Benutzer:</span> @{Request.requestingUser.fetch().username} <br/>
+			<span class="omm_nach">Von:</span> @{Request.startAddress.fetch().name}<br/>
+			<span class="omm_nach">Nach:</span> @{Request.destinationAddress.fetch().name}<br/>
+			<span class="omm_seats">Benötigte Sitzplätze:</span> @{Request.seats}<br/>					
+		</div>
+		@if(what == "owner"){
+			<div class="actions col-md-6">
+			 @helper.form(action = routes.Requests.processRequest(Request._id, "0"), 'Id -> "request", 'class -> "form") {
+		        <div class="actions form-group">
+					<input type="submit" class="btn btn-default" id="abschicken" value="Anfrage akzeptieren.">
+				</div
+    		}		
+			 @helper.form(action = routes.Requests.processRequest(Request._id, "1"), 'Id -> "request", 'class -> "form") {
+		        <div class="actions form-group">
+					<input type="submit" class="btn btn-default" id="abschicken" value="Anfrage ablehnen.">
+				</div
+    		}	
+			</div>
+		}
+	</div>

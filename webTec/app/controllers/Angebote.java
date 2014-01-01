@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import models.Marker;
+import models.Request;
 import models.Route;
 import models.User;
 
@@ -21,13 +22,17 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security.Authenticated;
 import play.mvc.With;
+import views.html.angebotAendern;
+import views.html.angebotAnzeigen;
+import views.html.angebotErstellen;
+import views.html.meineAngebote;
 import authenticators.Driver;
 import authenticators.Secured;
 
 import com.mongodb.BasicDBObject;
 
-import views.html.*;
 import db.MarkerDB;
+import db.RequestDB;
 import db.RouteDB;
 import db.UserDB;
 
@@ -47,8 +52,9 @@ public class Angebote extends Controller{
 	public static Result displayOffer(String id){
 		RouteDB routes = RouteDB.getInstance();
     	Route tempRoute = routes.findById(id);
+    	Form<Request> form = Form.form(Request.class);
     	
-    	return ok(angebotAnzeigen.render(tempRoute));
+    	return ok(angebotAnzeigen.render(tempRoute,form));
 	}
     /**
      * Method to return a list of all routes in the database. 
@@ -78,6 +84,7 @@ public class Angebote extends Controller{
     	UserDB users = UserDB.getInstance();
     	RouteDB routes = RouteDB.getInstance();
     	MarkerDB markers = MarkerDB.getInstance();
+    	RequestDB requests = RequestDB.getInstance();
     	User user = users.findByLoggedInHashKey(sessionID);
 		List<DBRef<Route, String>> routesList = user.routes;
 		
@@ -96,7 +103,19 @@ public class Angebote extends Controller{
 				for(int z = 0; z < markerList.size(); z++){
 					Marker tempMarker = markerList.get(z).fetch();
 					markers.delete(tempMarker._id);
-					Logger.info(z+"sdfsdsdg");
+				}
+				//delete all requests
+				for(int z = 0; z < tempRoute.requests.size(); z++){
+					Request tempRequest = tempRoute.requests.get(z).fetch();
+					//quite stupid and inefficient, no other idea though
+					List<DBRef<Request, String>> meh = tempRequest.requestingUser.fetch().requests;
+					for(int j = 0; j < meh.size(); j++){
+						if(meh.get(j).fetch()._id.equals(tempRequest._id)){
+							meh.remove(j);
+						}
+					}
+					user.requests = meh;
+					requests.delete(tempRequest._id);
 				}
 				//remove the route from the users collection
 				user.routes.remove(i);
@@ -107,19 +126,19 @@ public class Angebote extends Controller{
 			}
 		}
 		
-		ArrayList<Route> routesListNew = users.getRoutesForUser(sessionID);
-		return ok(meineAngebote.render(routesListNew));
+
+		return redirect(controllers.routes.Angebote.myOffers());
     }
     /**
      * Method to return a list of the users routes in the database. 
      * @return The Angebote page with a list of all markers in the database.
      */
     public static Result  myOffers(){
-
+    	String sessionID = session().get("sessionID");
     	UserDB users = UserDB.getInstance();
-		ArrayList<Route> routesList = users.getRoutesForUser(session().get("sessionID"));
-		
-		return ok(meineAngebote.render(routesList));
+		ArrayList<Route> routesList = users.getRoutesForUser(sessionID);
+		ArrayList<Request> requestList = users.getRequestsForUser(sessionID);
+		return ok(meineAngebote.render(routesList, requestList));
     }
     
 	@With({Driver.class})

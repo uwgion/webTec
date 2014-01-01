@@ -1,4 +1,4 @@
-@(Route:  Route)
+@(Route:  Route)(requestForm: Form[Request])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -8,28 +8,52 @@
     <h1>Aktuelle Angebote</h1>
 </div>
 
-	<div class="row">
-		<div id="map-canvas-single-offer" class="col-md-6" style="height:400px">
+@_displayOffer(Route)("")("4")
+
+@Route.wegpunkteForm.add(0, Route.startAdresse.fetch().name)
+
+	<div class="col-md-4">
+     @helper.form(action = routes.Requests.createRequest(Route._id), 'Id -> "request", 'class -> "form") {
+       
+        <fieldset>
+            <legend>Anfrage verschicken</legend>
+	            @inputText(
+	                requestForm("seats"), 
+	                'placeholder -> "Benötigte Sitzplätze",
+	                'class -> "form-control",
+	                'type -> "number",
+	                'max -> Route.seats,
+	                'min -> "1",
+	                '_label -> "Sitzplätze", 
+	                '_error -> requestForm.error("seats"),
+	                '_class -> "form-group"
+	            )
+				@select(
+				   requestForm("startAddressForm"),
+				   options = options(Route.wegpunkteForm),
+				   'class -> "form-control",				
+				   '_label -> "Von",
+	                '_class -> "form-group"
+				)
+			<input type="hidden" value=@Route.wegpunkteForm.add(Route.zielAdresse.fetch().name)@Route.wegpunkteForm.remove(0)>
+				@select(
+				   requestForm("destinationAddressForm"),
+				   options = options(Route.wegpunkteForm),
+	                'class -> "form-control", 
+				   '_label -> "Nach",
+				   '_class -> "form-group"			
+				   
+				)
+        </fieldset>
+        <div class="actions form-group">
+			<input type="submit" class="btn btn-default" id="abschicken" value="Mitfahrgelegenheit anfragen.">
+			<input type="hidden" value=@{Route._id} class="omm_value-offer">
 		</div>
-		<div class="omm_route-details col-md-6">
-			<span class="omm_von">Von:</span> @{Route.startAdresse.fetch().name} <br/>
-						@for(z <- 0 until Route.wegpunkteForm.size()){
-							Über: @Route.wegpunkteForm.get(z)<br/>
-						}
-			<span class="omm_nach">Nach:</span> @{Route.zielAdresse.fetch().name}<br/>
-			<div class="omm_start-end-waypoints">
-				<input type="hidden" class="omm_start-address" value="@{Route.startAdresse.fetch().latitude}/@{Route.startAdresse.fetch().longitude}">
-				<input type="hidden" class="omm_waypoints-address" value="@for(z <- 0 until Route.wegpunkte.size()){@Route.wegpunkte.get(z).fetch.latitude()
-									  /@Route.wegpunkte.get(z).fetch.longitude()//}">
-				<input type="hidden" class="omm_destination-address" value="@{Route.zielAdresse.fetch().latitude}/@{Route.zielAdresse.fetch().longitude}">
-			</div>
-			<div class="actions">
-				<input type="hidden" class="omm_value-offer" value="@{Route._id}">
-				<a href="@routes.Angebote.changeOfferForm(Route._id)" role="button"><input type="button" class="btn primary omm_update-entry" value="Eintrag ändern"></a>
-				<input type="button" class="btn primary omm_delete-entry" value="Mitfahrgelegenheit löschen.">
-			</div>
-		</div>
+
+    }		
+
 	</div>
+</div>
 	<script type="text/javascript"
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjsbaoEWBxF2oxvLEenqLjERjfJICyyWg&sensor=true">
 	</script>
@@ -45,7 +69,7 @@
 	    	};
 			
 
-	       	map = new google.maps.Map(document.getElementById("map-canvas-single-offer"), mapOptions);
+	       	map = new google.maps.Map(document.getElementById("map-canvas@{Route._id}"), mapOptions);
 
 			var tempAddress= $(document).find('.omm_start-address').val().split("/");
 			

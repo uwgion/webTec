@@ -2,9 +2,9 @@ package models;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -30,7 +30,8 @@ public class Route extends Entity {
 	public DBRef<Marker, String> zielAdresse;
 
 	public List<DBRef<Marker, String>> wegpunkte;
-
+	public List<DBRef<Request, String>> requests;
+	public Date dateCreated;
 	@Required
 	@Min(1)
 	@Max(9)
@@ -67,7 +68,10 @@ public class Route extends Entity {
 	}
 
 	public Route() {
-		wegpunkte = new LinkedList<>();
-		wegpunkteForm = new LinkedList<>();
+		wegpunkte = new ArrayList<>();
+		wegpunkteForm = new ArrayList<>();
+		requests = new ArrayList<>();
+		dateCreated = new Date();
+
 	}
 }

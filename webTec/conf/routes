@@ -9,6 +9,8 @@ GET     /meineAngebote              controllers.Angebote.myOffers()
 GET     /angebotErstellen           controllers.Angebote.createOffer()
 POST 	/angebotErstellen			controllers.Angebote.createRoute()
 GET     /angebotAnzeigen/:Id        controllers.Angebote.displayOffer(Id: String)
+POST    /angebotAnzeigen/:Id       controllers.Requests.createRequest(Id: String)
+
 GET 	/angebotAendern/:Id			controllers.Angebote.changeOfferForm(Id: String)
 POST 	/angebotAendern/:Id			controllers.Angebote.changeOffer(Id: String)
 DELETE 	/angebotErstellen/:Id		controllers.Angebote.destroyOffer(Id: String)
@@ -19,7 +21,8 @@ POST 	/login						controllers.Login.login()
 GET 	/logout						controllers.Application.logout()
 POST 	/registration				controllers.Registration.createUser()
 GET 	/registration				controllers.Registration.showRegistrationForm()
-
+GET 	/meineAnfragen				controllers.Requests.displayRequests()
+POST 	/meineAnfragen/:Id/:what	controllers.Requests.processRequest(Id: String, what: String)
 GET     /assets/javascripts/routes          controllers.Application.javascriptRoutes()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
