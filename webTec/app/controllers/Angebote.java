@@ -89,17 +89,20 @@ public class Angebote extends Controller{
     	RequestDB requests = RequestDB.getInstance();
     	User user = users.findByLoggedInHashKey(sessionID);
 		List<DBRef<Route, String>> routesList = user.routes;
-		
+		HashMap<String, String> fixedPoints = FixedPointDB.getInstance().getAllFixedPoints();
 		for(int i = 0; i < routesList.size(); i++){
 			Route tempRoute=routesList.get(i).fetch();
 			if(tempRoute._id.equals(id)){
 				List<DBRef<Marker, String>> markerList = tempRoute.wegpunkte;
 
-				//delete the start address marker
-				markers.delete(tempRoute.startAdresse.fetch()._id);
-				
-				//delete the destination address marker
-				markers.delete(tempRoute.zielAdresse.fetch()._id);
+				if(!fixedPoints.containsKey(tempRoute.startAdresse.fetch()._id)){
+					//delete the start address marker
+					markers.delete(tempRoute.startAdresse.fetch()._id);
+				}
+				if(!fixedPoints.containsKey(tempRoute.zielAdresse.fetch()._id)){
+					//delete the destination address marker
+					markers.delete(tempRoute.zielAdresse.fetch()._id);
+				}			
 				
 				//delete all waypoint markers
 				for(int z = 0; z < markerList.size(); z++){
@@ -255,19 +258,17 @@ public class Angebote extends Controller{
         if(requestData.hasErrors()) {
             return badRequest(angebotErstellen.render(routesList, requestData, fixedPoints));
 	    } else {
-	    	HashMap<String, String> markers = (HashMap<String, String>) requestData.data();
+	    	HashMap<String, String> requestDataMap = (HashMap<String, String>) requestData.data();
 	      
 	    	
 	        //get instances
 	        RouteDB routesInstance = RouteDB.getInstance();
 	        Route tempRoute;
 	    	try{
-	    		new Route().setDateTime(markers.get("timeForm"), markers.get("dateForm"));
-		        tempRoute  = routeListCreator.createRouteFromSubmittedMarkers(markers);
-		        tempRoute.seats = Integer.parseInt(markers.get("seats"));
-		        tempRoute.setDateTime(markers.get("timeForm"), markers.get("dateForm"));
-		        tempRoute.timeForm=markers.get("timeForm");
-		        tempRoute.dateForm=markers.get("dateForm");
+	    		new Route().setDateTime(requestDataMap.get("timeForm"), requestDataMap.get("dateForm"));
+		        tempRoute  = routeListCreator.createRouteFromSubmittedMarkers(requestDataMap);
+
+
 	    	}catch(AddressNotFoundException e){
 	    		flash("errors","Ungültige Adresse eingegeben.");
 				return badRequest(angebotErstellen.render(routesList, requestData, fixedPoints));

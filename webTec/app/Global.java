@@ -20,16 +20,17 @@ public class Global extends GlobalSettings {
 		RouteDB.init();	
 		FixedPointDB.init();
 		//create some test markers, aaaaaw yeeeeaaaah
-		Marker tempMarker = MarkerDB.getInstance().create(new Marker("fixedPoint", "Radolfzell Bahnhof", 8.9349472, 47.7242629));
+		Marker tempMarker = MarkerDB.getInstance().create(new Marker("fixedPoint", "Radolfzell Bahnhof", 47.7242629,8.9349472));
 		FixedPointDB fixedpoints = FixedPointDB.getInstance();
 		FixedPoint fixed = new FixedPoint();
 		fixed.marker = new DBRef<Marker, String>(tempMarker._id, Marker.class);
 		fixedpoints.create(fixed);
 		
-		tempMarker = MarkerDB.getInstance().create(new Marker("fixedPoint", "Weiler Flughafen", 8.937094199999999, 47.7173253));
+		tempMarker = MarkerDB.getInstance().create(new Marker("fixedPoint", "Weiler Flughafen", 47.7173253, 8.937094199999999));
 		fixed = new FixedPoint();
 		fixed.marker = new DBRef<Marker, String>(tempMarker._id, Marker.class);
 		fixedpoints.create(fixed);
+		
 	}
 
 	public void onStop(Application app) {

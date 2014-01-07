@@ -11,9 +11,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 
 public class MarkerDB extends Finder<Marker>{
-	public MarkerDB(DB db) {
-        super(db, "markers", Marker.class);
-}
+
 
 /**
  * collection name for things
@@ -21,6 +19,9 @@ public class MarkerDB extends Finder<Marker>{
 public static final String COLLECTION_THINGS = "markers";
 private static MarkerDB instance = new MarkerDB(DBConnect.getDB());
 
+public MarkerDB(DB db) {
+    super(db, COLLECTION_THINGS, Marker.class);
+}
 
 public static void init() {
         Logger.info("Initializing DB. Ensuring indexes.");

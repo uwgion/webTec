@@ -63,36 +63,55 @@ public class RouteAndMarkerHelpers {
 	
 	/**
 	 * Method to create a route from given markers.
-	 * @param markers A map of markers, containing their longitude, latitude and type of that marker.
+	 * @param requestMap A map of markers, containing their longitude, latitude and type of that marker.
 	 * @return tempRoute The created route.
 	 * @throws AddressNotFoundException 
+	 * @throws ParseException 
 	 */
-	public Route createRouteFromSubmittedMarkers(HashMap<String, String> markers) throws AddressNotFoundException{
-	        //create our tempRoute
+	public Route createRouteFromSubmittedMarkers(HashMap<String, String> requestMap) throws AddressNotFoundException, ParseException{
+	        MarkerDB markers = MarkerDB.getInstance();
+			//create our tempRoute
 	        Route tempRoute = new Route();
-
+			tempRoute.setDateTime(requestMap.get("timeForm"), requestMap.get("dateForm"));
+			tempRoute.timeForm=requestMap.get("timeForm");
+	        tempRoute.dateForm=requestMap.get("dateForm");
 	        //iterate over all addresses and get their latitude and longitude, then save those in a list
-	        for (String key : markers.keySet()) {
-	      
-	        	if(key.equals("timeForm") || key.equals("dateForm") || key.equals("seats") || key.equals("zielAdresseFormSelect") || key.equals("startAdresseFormSelect")){
+	        for (String key : requestMap.keySet()) {
+	        	
+	        	if(key.equals("timeForm") || key.equals("dateForm")){
 	        		continue;
 	        	}
-	            final Promise<String> resultPromise = singleAddressStringToGoogleAddress(markers.get(key));
+	            Promise<String> resultPromise;
 	            
 
-	            Marker tempMarker = createNewMarkerFromString(resultPromise, key);
-	            if(tempMarker == null){
-	            	return null;
-	            }
-	            if(tempMarker.what.equals("startAdresseForm")){
-	            	tempRoute.startAdresse = new DBRef<Marker, String>(tempMarker._id, Marker.class);
-	            }else if(tempMarker.what.equals("zielAdresseForm")){
-	            	tempRoute.zielAdresse = new DBRef<Marker, String>(tempMarker._id, Marker.class);	
+	            Marker tempMarker;
+
+	            if(key.equals("startAdresseForm") || key.equals("startAdresseFormSelect")){
+	            	if(key.equals("startAdresseForm") && requestMap.get("startAdresseFormSelect") == ""){
+	            		resultPromise = singleAddressStringToGoogleAddress(requestMap.get(key));
+	    	            tempMarker = createNewMarkerFromString(resultPromise, key);
+		            	tempRoute.startAdresse = new DBRef<Marker, String>(tempMarker._id, Marker.class);	
+	            	} else if(key.equals("startAdresseFormSelect") && requestMap.get("startAdresseFormSelect") != ""){
+		            	tempRoute.startAdresse = new DBRef<Marker, String>(markers.findById(requestMap.get(key))._id, Marker.class);	
+	            	}
+	            }else if(key.equals("zielAdresseForm") || key.equals("zielAdresseFormSelect")){
+	            	if(key.equals("zielAdresseForm") && requestMap.get("zielAdresseFormSelect") == ""){
+	            		resultPromise = singleAddressStringToGoogleAddress(requestMap.get(key));
+	    	            tempMarker = createNewMarkerFromString(resultPromise, key);
+		            	tempRoute.zielAdresse = new DBRef<Marker, String>(tempMarker._id, Marker.class);	
+	            	} else if(key.equals("zielAdresseFormSelect") && requestMap.get("zielAdresseFormSelect") != ""){
+		            	tempRoute.zielAdresse = new DBRef<Marker, String>(markers.findById(requestMap.get(key))._id, Marker.class);	
+	            	}	            
+            	}else if(key.equals("seats")){
+			        tempRoute.seats = Integer.parseInt(requestMap.get("seats"));
+
 	            }else{
-	            	 DBRef<Marker, String> tempDBRef = new DBRef<Marker, String>(tempMarker._id, Marker.class);
-	 	            //add our markers to our route
-	 	            tempRoute.wegpunkte.add(tempDBRef); 
-	 	            tempRoute.wegpunkteForm.add(tempMarker.name);
+            		resultPromise = singleAddressStringToGoogleAddress(requestMap.get(key));
+    	            tempMarker = createNewMarkerFromString(resultPromise, key);
+		        	DBRef<Marker, String> tempDBRef = new DBRef<Marker, String>(tempMarker._id, Marker.class);
+		            //add our markers to our route
+		            tempRoute.wegpunkte.add(tempDBRef); 
+		            tempRoute.wegpunkteForm.add(tempMarker.name);
 	            }                
 	        }
         return tempRoute;

@@ -5,20 +5,19 @@
 
 @main("HÃ¶riMit") {
 <div class="starter-template">
-    <h1>Aktuelle Angebote</h1>
+    <h1>Mitfahrgelegenheit ändern</h1>
 </div>
 
-     @helper.form(action = routes.Angebote.changeOffer(Route._id), 'Id -> "changeForm") {
+     @helper.form(action = routes.Angebote.changeOffer(Route._id), 'Id -> "changeForm", 'class -> "form-group col-md-4") {
        
         <fieldset>
-            <legend>Kontodetails</legend>
+            <legend>Mitfahrgelegenheit Details</legend>
             @inputText(
                 angebotForm("startAdresseForm"), 
                 'placeholder -> "Bitte eine Zieladresse eingeben.",
                 'class -> "form-control",
                 '_label -> "Startadresse", 
-                '_error -> angebotForm.error("startAdresse"),
-                '_class -> "form-group"
+                '_error -> angebotForm.error("startAdresse")
             )
 		            
             @for(key <- 0 to Route.wegpunkte.size()-1){
@@ -40,8 +39,7 @@
                 'placeholder -> "Bitte eine Startadresse eingeben.",
                 'class -> "form-control",
                 '_label -> "Zieladresse", 
-                '_error -> angebotForm.error("zielAdresse"),
-                '_class -> "form-group"
+                '_error -> angebotForm.error("zielAdresse")
             )
 		            
             @inputText(
@@ -49,16 +47,14 @@
                 'placeholder -> "Bitte eine Uhrzeit eingeben im Format hh:mm",
                 'class -> "form-control",
                 '_label -> "Zeit", 
-                '_error -> angebotForm.error("zeit"),
-                '_class -> "form-group"
+                '_error -> angebotForm.error("zeit")
             )
             @inputDate(
                 angebotForm("dateForm"), 
                 'placeholder -> "Bitte ein Datum eingeben im Format tt.mm.yyyy",
                 'class -> "form-control",
                 '_label -> "Datum", 
-                '_error -> angebotForm.error("datum"),
-                '_class -> "form-group"
+                '_error -> angebotForm.error("datum")
             )
             @inputText(
                 angebotForm("seats"), 
@@ -68,8 +64,7 @@
                 'max -> "9",
                 'min -> "1",
                 '_label -> "Sitzplätze", 
-                '_error -> angebotForm.error("seats"),
-                '_class -> "form-group"
+                '_error -> angebotForm.error("seats")
             )
         </fieldset>
         <div class="actions">

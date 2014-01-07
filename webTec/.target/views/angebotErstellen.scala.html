@@ -8,8 +8,7 @@
     <h1>Aktuelle Angebote</h1>
 </div>
 	<div class="row">
-		<div class="col-md-4">
-		     @helper.form(action = routes.Angebote.createRoute) {
+		     @helper.form(action = routes.Angebote.createRoute, 'class -> "col-md-4 form-group") {
 		       
 		        <fieldset>
 		            <legend>Kontodetails</legend>
@@ -26,7 +25,6 @@
 						options = options(fixedPoints),
 						'class -> "form-control",				
 						'_label -> "Von",
-	                	'_class -> "form-group",
 	                	'_default -> "Bitte auswählen."
 					)
 		            
@@ -37,16 +35,14 @@
 		                'placeholder -> "Bitte eine Startadresse eingeben.",
 		                'class -> "form-control",
 		                '_label -> "Zieladresse", 
-		                '_error -> angebotForm.error("zielAdresse"),
-		                '_class -> "form-group"
+		                '_error -> angebotForm.error("zielAdresse")
 		            )
 		            
 		           	@select(
 						angebotForm("zielAdresseFormSelect"),
 						options = options(fixedPoints),
 						'class -> "form-control",				
-						'_label -> "Von",
-	                	'_class -> "form-group",
+						'_label -> "Nach",
 	                	'_default -> "Bitte auswählen."
 					)
 					
@@ -55,16 +51,14 @@
 		                'placeholder -> "Bitte eine Uhrzeit eingeben im Format hh:mm",
 		                'class -> "form-control",
 		                '_label -> "Zeit", 
-		                '_error -> angebotForm.error("zeit"),
-		                '_class -> "form-group"
+		                '_error -> angebotForm.error("zeit")
 		            )
 		            @inputDate(
 		                angebotForm("dateForm"), 
 		                'placeholder -> "Bitte ein Datum eingeben im Format tt.mm.yyyy",
 		                'class -> "form-control",
 		                '_label -> "Datum", 
-		                '_error -> angebotForm.error("datum"),
-		                '_class -> "form-group"
+		                '_error -> angebotForm.error("datum")
 		            )
 		            @inputText(
 		                angebotForm("seats"), 
@@ -74,8 +68,7 @@
 		                'max -> "9",
 		                'min -> "1",
 		                '_label -> "Sitzplätze", 
-		                '_error -> angebotForm.error("seats"),
-		                '_class -> "form-group"
+		                '_error -> angebotForm.error("seats")
 		            )
 		        </fieldset>
 		        <div class="actions">
@@ -84,8 +77,7 @@
 				</div>
 		
 		    }
-	    </div>
-		<div class="col-md-8" style="height:630px" id="map-canvas"></div>
+		<div class="col-md-8 form-group" style="height:630px" id="map-canvas"></div>
 
     </div>
 

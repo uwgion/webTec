@@ -9,49 +9,60 @@
 
 @main("Regestrierung") {
     
-    @helper.form(action = routes.Registration.createUser) {
+    @helper.form(action = routes.Registration.createUser, 'class -> "form-group col-md-4") {
         
         <fieldset>
             <legend>Konto erstellen</legend>
             
             @inputText(
-                signupForm("username"), 
+                signupForm("username"),
+                'placeholder -> "Benutzername",
+                'class -> "form-control", 
                 '_label -> "Username", 
-                '_help -> "Please choose a valid username.",
+                '_help -> "Bitte geben Sie einen gültigen Benutzernamen ein.",
                 '_error -> signupForm.error("username")
             )
             
             @inputText(
-                signupForm("email"), '_label -> "Email",
-                '_help -> "Enter a valid email address.",
+                signupForm("email"), 
+                'placeholder -> "E-Mail",
+                'class -> "form-control", 
+                '_label -> "Email",
+                '_help -> "Bitte eine gültige E-Mail Adresse eingeben.",
                 '_error -> signupForm.error("email")
             )
             
             @inputPassword(
-                signupForm("password"), 
+                signupForm("password"),
+                'placeholder -> "Passwort",
+                'class -> "form-control", 
                 '_label -> "Password",
-                '_help -> "A password must be at least 6 characters. "
+                '_help -> "Passwort muss mindestens 6 Zeichen lang sein."
             )
             
             @inputPassword(
                 signupForm("repeatPassword"), 
+                'class -> "form-control", 
+                'placeholder -> "Passwort wiederholen",
                 '_label -> "Repeat password",
-                '_help -> "Please repeat your password again.",
+                '_help -> "Bitte Passwort wiederholen",
                 '_error -> signupForm.error("password")
             )
             @checkbox(
                 signupForm("driver"), 
+                'class -> "checkbox", 
                 '_label -> "Fahrer"
             )
              @checkbox(
                 signupForm("remember"), 
+                'class -> "checkbox", 
                 '_label -> "Remember me"
             )
             
         </fieldset>
         
         <div class="actions">
-            <input type="submit" class="btn primary" value="Sign Up">
+            <input type="submit" class="btn btn-default btn-lg" value="Sign Up">
             <a href="@routes.Application.index" class="btn">Cancel</a>
         </div>
         
