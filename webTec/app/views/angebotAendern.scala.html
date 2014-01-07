@@ -37,11 +37,30 @@
                 '_error -> angebotForm.error("zielAdresse")
             )
             
+            @inputText(
+                angebotForm("timeForm"), 
+                '_label -> "Zeit", 
+                '_placeholder -> "Bitte eine Uhrzeit eingeben.",
+                '_error -> angebotForm.error("zeit")
+            )
+            @inputDate(
+                angebotForm("dateForm"), 
+                '_label -> "Datum", 
+                '_placeholder -> "Bitte ein Datum eingeben.",
+                '_error -> angebotForm.error("datum")
+            )
+            @inputText(
+                angebotForm("seats"), 
+                '_label -> "Sitze", 
+                '_placeholder -> "Bitte verfï¿½gbare Sitzplï¿½tze eingeben.",
+                '_error -> angebotForm.error("zielAdresse")
+            )
+            
         </fieldset>
         <div class="actions">
-			<input type="submit" class="btn primary" id="abschicken" value="Mitfahrgelegenheit ändern.">
+			<input type="submit" class="btn btn-default" id="abschicken" value="Mitfahrgelegenheit ï¿½ndern.">
 			<input type="hidden" value=@{Route._id} class="omm_value-offer">
-			<input type="button" id="wegPunkteHinzufuegen" class="btn primary" value="Wegpunkte hinfzufügen.">
+			<input type="button" id="wegPunkteHinzufuegen" class="btn btn-default" value="Wegpunkte hinfzufï¿½gen.">
 		</div>
 
     }
@@ -52,8 +71,8 @@
     $("#wegPunkteHinzufuegen").click(function(){
     	counter += 1;
     	var html = $("#wegpunkte").html();
-    	html += '<div class="clearfix"><label for="wegpunkte'+counter+'">Über</label>';
-    	html += '<div class="input"><input name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="Über Adresse"></div>';
+    	html += '<div class="clearfix"><label for="wegpunkte'+counter+'">ï¿½ber</label>';
+    	html += '<div class="input"><input name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="ï¿½ber Adresse"></div>';
     	html += '<span class="help-block">Required</span></div>';
     	$("#wegpunkte").html(html);
 

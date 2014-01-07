@@ -16,7 +16,6 @@ import models.User;
 import org.mongojack.DBCursor;
 import org.mongojack.DBRef;
 
-import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -195,12 +194,23 @@ public class Angebote extends Controller{
     	try{
     		routeListCreator.updateRoute(id, requestMap, routes, markers, routesList);
     	}catch(AddressNotFoundException e){
+
     		flash("errors","Ungültige Adresse eingegeben.");
     		Route tempRoute = buildRequestedOffer(id);
         	Form<Route> responseData = Form.form(Route.class);
         	Form<Route> responseDataFilled = responseData.fill(tempRoute);
     		return badRequest(angebotAendern.render(tempRoute, responseDataFilled));
-    	}
+    	} catch (ParseException e) {
+    		Route tempRoute = buildRequestedOffer(id);
+        	Form<Route> responseData = Form.form(Route.class);
+        	Form<Route> responseDataFilled = responseData.fill(tempRoute);
+    		if(e.toString().matches(".*Date in past.")){
+	    		flash("errors","Datum oder Uhrzeit in der Vergangenheit.");
+    		}else{
+    			flash("errors","Ungültiges Datums- oder Uhrzeitformt eingegeben.");
+    		}
+			return badRequest(angebotAendern.render(tempRoute, responseDataFilled));
+		}
     	
 		flash("success","Angebot erfolgreich gespeichert.");
 		return redirect(controllers.routes.Angebote.myOffers());
@@ -255,7 +265,6 @@ public class Angebote extends Controller{
 	    		flash("errors","Ungültige Adresse eingegeben.");
 				return badRequest(angebotErstellen.render(routesList, requestData));
 	    	}
-
 	    	catch (ParseException e) {
 	    		if(e.toString().matches(".*Date in past.")){
 		    		flash("errors","Datum oder Uhrzeit in der Vergangenheit.");

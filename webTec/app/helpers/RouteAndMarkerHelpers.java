@@ -1,6 +1,8 @@
 package helpers;
 
+import java.text.ParseException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -25,7 +27,8 @@ import db.MarkerDB;
 import db.RouteDB;
 
 public class RouteAndMarkerHelpers {
-
+	private static DateAndTimeHelpers dateHelper = new DateAndTimeHelpers();
+	
 	/**
 	 * Method to build a list of routes, containg a list of markers for each
 	 * route.
@@ -35,7 +38,7 @@ public class RouteAndMarkerHelpers {
 
     	RouteDB routes = RouteDB.getInstance();
 		DBCursor<Route> cursor =  routes.findNative(new BasicDBObject());
-		LinkedList<LinkedList<Marker>> routesWithMarkers = new LinkedList<>();
+		LinkedList<LinkedList<Marker>> routesWithMarkers = new LinkedList<LinkedList<Marker>>();
 		
 		//iterate over all routes
 		while(cursor.hasNext()){			
@@ -44,7 +47,7 @@ public class RouteAndMarkerHelpers {
 			Iterator<DBRef<Marker, String>> it = tempList.iterator();
 			
 			//create a list with the markers
-			LinkedList<Marker> tempMarkersList = new LinkedList<>();
+			LinkedList<Marker> tempMarkersList = new LinkedList<Marker>();
 			while(it.hasNext()){	
 				DBRef<Marker, String> eh = it.next();
 				//fetch the marker from the DB and add it to the list
@@ -103,30 +106,56 @@ public class RouteAndMarkerHelpers {
 	 * @param markers A markerDB instance.
 	 * @param routesList A list with all routes for the user who submitted the form.
 	 * @throws AddressNotFoundException 
+	 * @throws ParseException 
 	 */
 	public void updateRoute(String id, HashMap<String, String> requestMap,
 			RouteDB routes, MarkerDB markers,
-			List<DBRef<Route, String>> routesList) throws AddressNotFoundException {
-		LinkedList<String> waypoints = new LinkedList<>();
+			List<DBRef<Route, String>> routesList) throws AddressNotFoundException, ParseException {
+		LinkedList<String> waypoints = new LinkedList<String>();
 		for(int i = 0; i < routesList.size(); i++){
 			Route tempRoute=routesList.get(i).fetch();
 			if(tempRoute._id.equals(id)){
+				Date tempDate = dateHelper.parseDateAndTime(requestMap.get("timeForm"), requestMap.get("dateForm"));
+				if(tempDate.compareTo(tempRoute.dateTime) != 0){
+					tempRoute.setDateTime(requestMap.get("timeForm"), requestMap.get("dateForm"));
+					tempRoute.timeForm=requestMap.get("timeForm");
+			        tempRoute.dateForm=requestMap.get("dateForm");
+					routes.save(tempRoute);
+				}
+				
+				//iterating over request necessary? Could get the specific key, but would need to
+				//iterate over the request anyways for the waypoints.
+				//save route only, when we really changed something! No unnecessary database transactions.
 				for (String key : requestMap.keySet()) {
-
-					 if(key.equals("startAdresseForm")){
-						if(!tempRoute.startAdresse.fetch().name.equals(requestMap.get(key))){
-							updateStartAddress(routes, markers, tempRoute, requestMap.get(key));
+		        	if(key.equals("timeForm") || key.equals("dateForm")){
+		        		continue;
+		        	}
+		        	if(key.equals("startAdresseForm")){
+		        		String startAdresseForm = requestMap.get(key);
+						if(!tempRoute.startAdresse.fetch().name.equals(startAdresseForm)){
+							updateStartAddress(routes, markers, tempRoute, startAdresseForm);
 						}
 					 }else if(key.equals("zielAdresseForm")){
-						if(!tempRoute.zielAdresse.fetch().name.equals(requestMap.get(key))){
-							updateDestinationAddress(routes, markers, tempRoute, requestMap.get(key));
+						String zielAdresseForm = requestMap.get(key);
+						if(!tempRoute.zielAdresse.fetch().name.equals(zielAdresseForm)){
+							updateDestinationAddress(routes, markers, tempRoute, zielAdresseForm);
 						}
-					 }else{
+					 }else if(key.equals("seats")){
+						 Logger.info("dum");
+						int seats = Integer.parseInt(requestMap.get("seats"));
+						if(tempRoute.seats != seats){
+							tempRoute.seats = seats;
+							routes.save(tempRoute);
+						}
+					 }
+					 else{
 						waypoints.add(requestMap.get(key));
 					 }
 				}
 				
+				//do we have waypoints?
 				if(waypoints.size() > 0){
+					//set our updated waypoints.
 					updateWaypoints(tempRoute, waypoints);
 				}
 				break;

@@ -7,57 +7,71 @@
 <div class="starter-template">
     <h1>Aktuelle Angebote</h1>
 </div>
+	<div class="row">
+		<div class="col-md-4">
+		     @helper.form(action = routes.Angebote.createRoute) {
+		       
+		        <fieldset>
+		            <legend>Kontodetails</legend>
+		            
+		            @inputText(
+		                angebotForm("startAdresseForm"), 
+		                'placeholder -> "Bitte eine Zieladresse eingeben.",
+		                'class -> "form-control",
+		                '_label -> "Startadresse", 
+		                '_error -> angebotForm.error("startAdresse"),
+		                '_class -> "form-group"
+		            )
+		            
+					<div id="wegpunkte"></div>
+		            
+		            @inputText(
+		                angebotForm("zielAdresseForm"), 
+		                'placeholder -> "Bitte eine Startadresse eingeben.",
+		                'class -> "form-control",
+		                '_label -> "Zieladresse", 
+		                '_error -> angebotForm.error("zielAdresse"),
+		                '_class -> "form-group"
+		            )
+		            
+		            @inputText(
+		                angebotForm("timeForm"), 
+		                'placeholder -> "Bitte eine Uhrzeit eingeben im Format hh:mm",
+		                'class -> "form-control",
+		                '_label -> "Zeit", 
+		                '_error -> angebotForm.error("zeit"),
+		                '_class -> "form-group"
+		            )
+		            @inputDate(
+		                angebotForm("dateForm"), 
+		                'placeholder -> "Bitte ein Datum eingeben im Format tt.mm.yyyy",
+		                'class -> "form-control",
+		                '_label -> "Datum", 
+		                '_error -> angebotForm.error("datum"),
+		                '_class -> "form-group"
+		            )
+		            @inputText(
+		                angebotForm("seats"), 
+						'placeholder -> "Verfügbare Sitzplätze",
+		                'class -> "form-control",
+		                'type -> "number",
+		                'max -> "9",
+		                'min -> "1",
+		                '_label -> "Sitzplätze", 
+		                '_error -> angebotForm.error("seats"),
+		                '_class -> "form-group"
+		            )
+		        </fieldset>
+		        <div class="actions">
+					<input type="submit" class="btn btn-default" value="Mitfahrgelegenheit eintragen.">
+					<input type="button" id="wegPunkteHinzufuegen" class="btn btn-default" value="Wegpunkte hinfzufügen."></button>
+				</div>
+		
+		    }
+	    </div>
+		<div class="col-md-8" style="height:630px" id="map-canvas"></div>
 
-     @helper.form(action = routes.Angebote.createRoute) {
-       
-        <fieldset>
-            <legend>Kontodetails</legend>
-            
-            @inputText(
-                angebotForm("startAdresseForm"), 
-                '_label -> "Startadresse", 
-                '_placeholder -> "Please choose a valid username.",
-                '_error -> angebotForm.error("startAdresse")
-            )
-            
-			<div id="wegpunkte"></div>
-            
-            @inputText(
-                angebotForm("zielAdresseForm"), 
-                '_label -> "Zieladresse", 
-                '_placeholder -> "Please choose a valid username.",
-                '_error -> angebotForm.error("zielAdresse")
-            )
-            
-            @inputText(
-                angebotForm("timeForm"), 
-                '_label -> "Zeit", 
-                '_placeholder -> "Bitte eine Uhrzeit eingeben.",
-                '_error -> angebotForm.error("zeit")
-            )
-            @inputText(
-                angebotForm("dateForm"), 
-                '_label -> "Datum", 
-                '_placeholder -> "Bitte ein Datum eingeben.",
-                '_error -> angebotForm.error("datum")
-            )
-            @inputText(
-                angebotForm("seats"), 
-                '_label -> "Sitze", 
-                '_placeholder -> "Bitte verfügbare Sitzplätze eingeben.",
-                '_error -> angebotForm.error("zielAdresse")
-            )
-            
-        </fieldset>
-        <div class="actions">
-			<input type="submit" class="btn primary" value="Mitfahrgelegenheit eintragen.">
-			<input type="button" id="wegPunkteHinzufuegen" class="btn primary" value="Wegpunkte hinfzufügen."></button>
-		</div>
-
-    }
-    
-<div id="map-canvas"/>
-
+    </div>
 
 <script type="text/javascript"
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjsbaoEWBxF2oxvLEenqLjERjfJICyyWg&sensor=true">
@@ -138,8 +152,8 @@
     $("#wegPunkteHinzufuegen").click(function(){
     	counter += 1;
     	var html = $("#wegpunkte").html();
-    	html += '<div class="clearfix"><label for="wegpunkte'+counter+'">Über</label>';
-    	html += '<div class="input"><input name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="Über Adresse"></div>';
+    	html += '<div class="clearfix form-group"><label for="wegpunkte'+counter+'">Über</label>';
+    	html += '<div class="input"><input class="form-control" name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="Über Adresse"></div>';
     	html += '<span class="help-block">Required</span></div>';
     	$("#wegpunkte").html(html);
 

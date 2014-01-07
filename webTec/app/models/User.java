@@ -31,8 +31,8 @@ public class User extends Entity{
 	
 
 	public User(){
-		routes = new ArrayList<>();
-		requests = new ArrayList<>();
+		routes = new ArrayList<DBRef<Route, String>>();
+		requests = new ArrayList<DBRef<Request, String>>();
 		dateCreated = new Date();
 	}
     public String toString() {

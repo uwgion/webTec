@@ -54,7 +54,7 @@ public class UserDB extends Finder<User>{
 	 */
 	public ArrayList<Route> getRoutesForUser(String LoggedInHashKey){
 		User tempUser = findByLoggedInHashKey(LoggedInHashKey);
-		ArrayList<Route> tempList = new ArrayList<>();
+		ArrayList<Route> tempList = new ArrayList<Route>();
 		
 		Logger.info(tempUser.routes.size()+"");
 		for(int z = 0; z < tempUser.routes.size(); z++){
@@ -71,8 +71,7 @@ public class UserDB extends Finder<User>{
 	 */
 	public ArrayList<Request> getRequestsForUser(String LoggedInHashKey){
 		User tempUser = findByLoggedInHashKey(LoggedInHashKey);
-		ArrayList<Request> tempList = new ArrayList<>();
-		Logger.info(tempUser.requests.size()+"");
+		ArrayList<Request> tempList = new ArrayList<Request>();
 		for(int z = 0; z < tempUser.requests.size(); z++){
 			Logger.info("adding shit");
 			tempList.add(tempUser.requests.get(z).fetch());

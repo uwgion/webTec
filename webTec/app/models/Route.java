@@ -1,12 +1,11 @@
 package models;
 
+import helpers.DateAndTimeHelpers;
+
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.mongojack.DBRef;
 import org.mongojack.MongoCollection;
@@ -47,30 +46,17 @@ public class Route extends Entity {
 	public Date dateTime;
 	
 	public void setDateTime(String time, String date) throws ParseException {
-		SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-		df.setLenient(false);
-		
-		GregorianCalendar temp = new GregorianCalendar();
-		GregorianCalendar tempNow = new GregorianCalendar();
-
-		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		temp.setTime(df.parse(date + " " + time));
-
-		//set new today date plus one hour for GMT+1 // UTC+1
-		tempNow.setTimeInMillis(System.currentTimeMillis()+3600000);
-		tempNow.setTimeZone(TimeZone.getTimeZone("GMT"));
-		tempNow.setTime(tempNow.getTime());
-
-		if(temp.getTime().before(tempNow.getTime())){
-			throw new ParseException("Date in past.", 0);
-		}
-		dateTime = temp.getTime();
+		//no strict seperation of model and logic here
+		//need to think about this
+		dateTime = new DateAndTimeHelpers().parseDateAndTime(time, date);
 	}
 
+
+
 	public Route() {
-		wegpunkte = new ArrayList<>();
-		wegpunkteForm = new ArrayList<>();
-		requests = new ArrayList<>();
+		wegpunkte = new ArrayList<DBRef<Marker, String>>();
+		wegpunkteForm = new ArrayList<String>();
+		requests = new ArrayList<DBRef<Request, String>>();
 		dateCreated = new Date();
 
 	}

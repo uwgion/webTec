@@ -29,7 +29,7 @@ public class Requests extends Controller{
 		User user = users.findByLoggedInHashKey(session().get("sessionID"));
 		ArrayList<Request> myCreatedRequests = users.getRequestsForUser(user.loggedInHashKey);
 		ArrayList<Route> myCreatedRoutes = users.getRoutesForUser(user.loggedInHashKey);
-		ArrayList<Request> myNotApprovedRequests = new ArrayList<>();
+		ArrayList<Request> myNotApprovedRequests = new ArrayList<Request>();
 		for(Route route: myCreatedRoutes){
 			for(DBRef<Request, String> request: route.requests){
 				Request tempRequest = request.fetch();
