@@ -16,6 +16,7 @@ import models.User;
 import org.mongojack.DBCursor;
 import org.mongojack.DBRef;
 
+import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -30,11 +31,11 @@ import authenticators.Secured;
 
 import com.mongodb.BasicDBObject;
 
+import db.FixedPointDB;
 import db.MarkerDB;
 import db.RequestDB;
 import db.RouteDB;
 import db.UserDB;
-
 /**
  * Class to create, update and destroy offers. Only accessible if logged in.
  *
@@ -43,6 +44,7 @@ import db.UserDB;
 public class Angebote extends Controller{
 	static RouteAndMarkerHelpers routeListCreator = new RouteAndMarkerHelpers();
 
+	
 	/**
 	 * Method to display an existing offer.
 	 * @param id The id of the offer to display.
@@ -52,7 +54,7 @@ public class Angebote extends Controller{
 		RouteDB routes = RouteDB.getInstance();
     	Route tempRoute = routes.findById(id);
     	Form<Request> form = Form.form(Request.class);
-    	
+
     	return ok(angebotAnzeigen.render(tempRoute,form));
 	}
     /**
@@ -67,9 +69,10 @@ public class Angebote extends Controller{
     	RouteDB routes = RouteDB.getInstance();
 		DBCursor<Route> cursor =  routes.findNative(new BasicDBObject());
 		ArrayList<Route> routesList = (ArrayList<Route>) cursor.toArray();
+		HashMap<String, String> fixedPoints = FixedPointDB.getInstance().getAllFixedPoints();
+
 		
-		
-		return ok(angebotErstellen.render(routesList, form));
+		return ok(angebotErstellen.render(routesList, form, fixedPoints));
     }
     
     /**
@@ -235,6 +238,8 @@ public class Angebote extends Controller{
 		ArrayList<Route> routesList = users.getRoutesForUser(sessionID);
 		
     	requestData = requestData.bindFromRequest();
+		Logger.info(requestData.data().toString());
+
         // Check if the start address is empty
 	    if(!requestData.field("startAdresse").valueOr("").isEmpty()) {
             	requestData.reject("startAdresse", "Keine Startadresse eingegeben.");
@@ -245,8 +250,10 @@ public class Angebote extends Controller{
             	requestData.reject("zielAdresse", "Keine Zieladresse eingegeben.");
         	}
         }
+		HashMap<String, String> fixedPoints = FixedPointDB.getInstance().getAllFixedPoints();
+
         if(requestData.hasErrors()) {
-            return badRequest(angebotErstellen.render(routesList, requestData));
+            return badRequest(angebotErstellen.render(routesList, requestData, fixedPoints));
 	    } else {
 	    	HashMap<String, String> markers = (HashMap<String, String>) requestData.data();
 	      
@@ -263,7 +270,7 @@ public class Angebote extends Controller{
 		        tempRoute.dateForm=markers.get("dateForm");
 	    	}catch(AddressNotFoundException e){
 	    		flash("errors","Ungültige Adresse eingegeben.");
-				return badRequest(angebotErstellen.render(routesList, requestData));
+				return badRequest(angebotErstellen.render(routesList, requestData, fixedPoints));
 	    	}
 	    	catch (ParseException e) {
 	    		if(e.toString().matches(".*Date in past.")){
@@ -271,7 +278,7 @@ public class Angebote extends Controller{
 	    		}else{
 	    			flash("errors","Ungültiges Datums- oder Uhrzeitformt eingegeben.");
 	    		}
-				return badRequest(angebotErstellen.render(routesList, requestData));
+				return badRequest(angebotErstellen.render(routesList, requestData, fixedPoints));
 			}
 	        
 	        //get the current user which we need later one to give him the route

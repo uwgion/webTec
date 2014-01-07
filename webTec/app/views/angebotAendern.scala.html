@@ -12,18 +12,20 @@
        
         <fieldset>
             <legend>Kontodetails</legend>
-            
             @inputText(
                 angebotForm("startAdresseForm"), 
+                'placeholder -> "Bitte eine Zieladresse eingeben.",
+                'class -> "form-control",
                 '_label -> "Startadresse", 
-                '_error -> angebotForm.error("startAdresse")
+                '_error -> angebotForm.error("startAdresse"),
+                '_class -> "form-group"
             )
-            
+		            
             @for(key <- 0 to Route.wegpunkte.size()-1){
-            	<div class="clearfix" id="wegpunkt@{key}_field">
+            	<div class="clearfix form-group" id="wegpunkt@{key}_field">
 				    <label for="wegpunkt@{key}">Wegpunkt @{key+1}</label>
 				    <div class="input">		        
-				    <input id="wegpunkt@{key}" name="wegpunkt@{key}" value="@{Route.wegpunkteForm.get(key)}" type="text">			
+				    <input id="wegpunkt@{key}" class="form-control" name="wegpunkt@{key}" value="@{Route.wegpunkteForm.get(key)}" type="text">			
 				        <span class="help-inline"></span>
 				        <span class="help-block">Required</span> 
 				    </div>
@@ -31,31 +33,44 @@
             }
 			<div id="wegpunkte"></div>
             
+
+		            
             @inputText(
                 angebotForm("zielAdresseForm"), 
+                'placeholder -> "Bitte eine Startadresse eingeben.",
+                'class -> "form-control",
                 '_label -> "Zieladresse", 
-                '_error -> angebotForm.error("zielAdresse")
+                '_error -> angebotForm.error("zielAdresse"),
+                '_class -> "form-group"
             )
-            
+		            
             @inputText(
                 angebotForm("timeForm"), 
+                'placeholder -> "Bitte eine Uhrzeit eingeben im Format hh:mm",
+                'class -> "form-control",
                 '_label -> "Zeit", 
-                '_placeholder -> "Bitte eine Uhrzeit eingeben.",
-                '_error -> angebotForm.error("zeit")
+                '_error -> angebotForm.error("zeit"),
+                '_class -> "form-group"
             )
             @inputDate(
                 angebotForm("dateForm"), 
+                'placeholder -> "Bitte ein Datum eingeben im Format tt.mm.yyyy",
+                'class -> "form-control",
                 '_label -> "Datum", 
-                '_placeholder -> "Bitte ein Datum eingeben.",
-                '_error -> angebotForm.error("datum")
+                '_error -> angebotForm.error("datum"),
+                '_class -> "form-group"
             )
             @inputText(
                 angebotForm("seats"), 
-                '_label -> "Sitze", 
-                '_placeholder -> "Bitte verfï¿½gbare Sitzplï¿½tze eingeben.",
-                '_error -> angebotForm.error("zielAdresse")
+				'placeholder -> "Verfügbare Sitzplätze",
+                'class -> "form-control",
+                'type -> "number",
+                'max -> "9",
+                'min -> "1",
+                '_label -> "Sitzplätze", 
+                '_error -> angebotForm.error("seats"),
+                '_class -> "form-group"
             )
-            
         </fieldset>
         <div class="actions">
 			<input type="submit" class="btn btn-default" id="abschicken" value="Mitfahrgelegenheit ï¿½ndern.">
@@ -71,10 +86,10 @@
     $("#wegPunkteHinzufuegen").click(function(){
     	counter += 1;
     	var html = $("#wegpunkte").html();
-    	html += '<div class="clearfix"><label for="wegpunkte'+counter+'">ï¿½ber</label>';
-    	html += '<div class="input"><input name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="ï¿½ber Adresse"></div>';
+    	html += '<div class="clearfix form-group"><label for="wegpunkte'+counter+'">Über</label>';
+    	html += '<div class="input"><input class="form-control" name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="Über Adresse"></div>';
     	html += '<span class="help-block">Required</span></div>';
-    	$("#wegpunkte").html(html);
+	   	$("#wegpunkte").html(html);
 
     });
 /*	$("#abschicken").click(function(event){

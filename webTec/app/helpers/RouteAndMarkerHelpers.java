@@ -74,7 +74,7 @@ public class RouteAndMarkerHelpers {
 	        //iterate over all addresses and get their latitude and longitude, then save those in a list
 	        for (String key : markers.keySet()) {
 	      
-	        	if(key.equals("timeForm") || key.equals("dateForm") || key.equals("seats")){
+	        	if(key.equals("timeForm") || key.equals("dateForm") || key.equals("seats") || key.equals("zielAdresseFormSelect") || key.equals("startAdresseFormSelect")){
 	        		continue;
 	        	}
 	            final Promise<String> resultPromise = singleAddressStringToGoogleAddress(markers.get(key));
