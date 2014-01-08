@@ -1,14 +1,38 @@
-.alrt{
-	margin-top: 15px;
+.navbar{
+	margin-bottom: 15px;
 }
-
-.omm_navbar-buttons li:first-child {
+.omm_navbar-buttons li:first-child:not(.dropdown-element){
 	border-left: 1px solid rgb(75, 75, 75);
 	}
-.omm_navbar-buttons li {
+.omm_navbar-buttons li:not(.dropdown-element){
     border-right: 1px solid rgb(75, 75, 75);
 }
 
 .row{
 	padding: 15px;
+}
+
+.omm_content{
+	margin-top: 20px;	
+}
+
+.alert-success{
+	font-size:19px;
+	color:#3c763d;
+}
+.alert-danger{
+	font-size:19px;
+}
+
+.glyphicon-remove{
+	font-size:20px;
+	color:#FF0000;
+}
+
+.glyphicon-ok{
+	color:#ABDD1F;
+}
+
+.map-canvas{
+	border-radius: 4px;
 }

@@ -1,6 +1,7 @@
 package helpers;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -68,13 +69,17 @@ public class RouteAndMarkerHelpers {
 	 * @throws AddressNotFoundException 
 	 * @throws ParseException 
 	 */
-	public Route createRouteFromSubmittedMarkers(HashMap<String, String> requestMap) throws AddressNotFoundException, ParseException{
+	public Route createRouteFromSubmittedMarkers(HashMap<String, String> requestMap, Route routeOnlyForDate) throws AddressNotFoundException, ParseException{
 	        MarkerDB markers = MarkerDB.getInstance();
-			//create our tempRoute
+			
+	        //create our tempRoute
 	        Route tempRoute = new Route();
-			tempRoute.setDateTime(requestMap.get("timeForm"), requestMap.get("dateForm"));
+	        
+
+			tempRoute.dateForm=routeOnlyForDate.dateForm;
+			tempRoute.setTimeAndValidate(requestMap.get("timeForm"));
 			tempRoute.timeForm=requestMap.get("timeForm");
-	        tempRoute.dateForm=requestMap.get("dateForm");
+			dateHelper.validateDateAndTime(tempRoute);
 	        //iterate over all addresses and get their latitude and longitude, then save those in a list
 	        for (String key : requestMap.keySet()) {
 	        	
@@ -134,11 +139,15 @@ public class RouteAndMarkerHelpers {
 		for(int i = 0; i < routesList.size(); i++){
 			Route tempRoute=routesList.get(i).fetch();
 			if(tempRoute._id.equals(id)){
-				Date tempDate = dateHelper.parseDateAndTime(requestMap.get("timeForm"), requestMap.get("dateForm"));
-				if(tempDate.compareTo(tempRoute.dateTime) != 0){
-					tempRoute.setDateTime(requestMap.get("timeForm"), requestMap.get("dateForm"));
+				Date tempTime = dateHelper.parseDateAndTime(requestMap.get("timeForm"));
+				Date tempDate = new SimpleDateFormat("yyyy-MM-dd").parse(requestMap.get("dateForm"));
+				if(tempDate.compareTo(tempRoute.dateForm) != 0){
+					tempRoute.dateForm=new SimpleDateFormat("yyyy-MM-dd").parse(requestMap.get("dateForm"));
+					routes.save(tempRoute);
+				}
+				if(tempTime.compareTo(tempRoute.time) != 0){
+					tempRoute.setTimeAndValidate(requestMap.get("timeForm"));
 					tempRoute.timeForm=requestMap.get("timeForm");
-			        tempRoute.dateForm=requestMap.get("dateForm");
 					routes.save(tempRoute);
 				}
 				

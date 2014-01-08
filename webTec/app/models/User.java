@@ -8,6 +8,7 @@ import org.mongojack.DBRef;
 import org.mongojack.MongoCollection;
 
 import play.data.validation.Constraints;
+import play.data.validation.Constraints.MinLength;
 
 @MongoCollection(name = "users")
 public class User extends Entity{
@@ -17,6 +18,7 @@ public class User extends Entity{
 	public String email;
 	
 	@Constraints.Required
+	@MinLength(6)
 	public String password;
 	
 	@Constraints.Required
@@ -29,7 +31,6 @@ public class User extends Entity{
 	public Date dateCreated;
 	public boolean remember;
 	
-
 	public User(){
 		routes = new ArrayList<DBRef<Route, String>>();
 		requests = new ArrayList<DBRef<Request, String>>();

@@ -10,8 +10,6 @@ import play.Logger;
 public class RequestHelpers {
 
 	public DBRef<Marker, String> findMarkerForString(Route route, String address){
-		Logger.info(address);
-		Logger.info(route._id);
 		if(route.startAdresse.fetch().name.equals(address)){
 			return route.startAdresse;
 		}else if(route.zielAdresse.fetch().name.equals(address)){

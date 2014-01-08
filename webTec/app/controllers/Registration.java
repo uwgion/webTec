@@ -33,7 +33,7 @@ public class Registration extends Controller{
 	    // Check repeated password
 	    if(!form.field("password").valueOr("").isEmpty()) {
             if(!form.field("password").valueOr("").equals(form.field("repeatPassword").value())) {
-            	form.reject("repeatPassword", "Password don't match");
+            	form.reject("repeatPassword", "Passwörter stimmen nicht überein");
             }
         }
 	    
@@ -49,7 +49,7 @@ public class Registration extends Controller{
 		// Check if the email is valid
         if(!form.hasErrors()) {
             if(cursor.hasNext()){
-            	form.reject("email", "This email is already taken");
+            	form.reject("email", "E-Mail Adresse bereits vergeben");
             }
         }
 
@@ -61,7 +61,7 @@ public class Registration extends Controller{
         // Check if the username is valid
         if(!form.hasErrors()) {
             if(cursor.hasNext()) {
-            	form.reject("username", "This username is already taken");
+            	form.reject("username", "Benutzername schon vergeben");
             }
         }
         if(form.hasErrors()) {

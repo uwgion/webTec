@@ -1,4 +1,4 @@
-@(Route:  Route)(angebotForm: Form[Route])
+@(Route:  Route)(angebotForm: Form[Route])(fixedPoints: HashMap[String, String])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -19,7 +19,15 @@
                 '_label -> "Startadresse", 
                 '_error -> angebotForm.error("startAdresse")
             )
-		            
+            
+		    @select(
+				angebotForm("startAdresseFormSelect"),
+				options = options(fixedPoints),
+				'class -> "form-control",				
+				'_label -> "Von",
+               	'_default -> "Bitte auswählen."
+			)    
+			    
             @for(key <- 0 to Route.wegpunkte.size()-1){
             	<div class="clearfix form-group" id="wegpunkt@{key}_field">
 				    <label for="wegpunkt@{key}">Wegpunkt @{key+1}</label>
@@ -41,7 +49,13 @@
                 '_label -> "Zieladresse", 
                 '_error -> angebotForm.error("zielAdresse")
             )
-		            
+           	@select(
+				angebotForm("zielAdresseFormSelect"),
+				options = options(fixedPoints),
+				'class -> "form-control",				
+				'_label -> "Nach",
+               	'_default -> "Bitte auswählen."
+			)        
             @inputText(
                 angebotForm("timeForm"), 
                 'placeholder -> "Bitte eine Uhrzeit eingeben im Format hh:mm",

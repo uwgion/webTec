@@ -1,11 +1,10 @@
-$(document).ready(function(){
+var omm_mapCanvases = new omm_mapCanvases();
+//var omm_createOffer = new omm_createOffer();
 
-        var url = window.location;
-         $('ul.nav a').filter(function() {
-            return this.href == url;
-        }).parent().removeClass('active');
-        // Will also work for relative and absolute hrefs
-        $('ul.nav a').filter(function() {
-            return this.href == url;
-        }).parent().addClass('active');
+$(document).ready(function(){
+    if(!$(document).find('div').hasClass("panel-group")){
+	    var eventID=$(".omm_value-offer").val();
+	    omm_mapCanvases.initialize(eventID);
+    }
+
 });

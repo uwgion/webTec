@@ -1,11 +1,11 @@
 
 @if(flash.get("success") != null) {
    <p class="alert alert-success">
-       @flash.get("success")
+       <i class="glyphicon glyphicon-ok"></i> &nbsp @flash.get("success")
    </p>
 }
  @if(flash.get("errors") != null) {
    <p class="alert alert-danger">
-       @flash.get("errors")
+       <i class="glyphicon glyphicon-remove"></i> &nbsp @flash.get("errors")
    </p>
 }

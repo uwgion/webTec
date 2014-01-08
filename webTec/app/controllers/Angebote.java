@@ -17,7 +17,9 @@ import org.mongojack.DBCursor;
 import org.mongojack.DBRef;
 
 import play.Logger;
+import play.Routes;
 import play.data.Form;
+import play.i18n.Lang;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security.Authenticated;
@@ -36,6 +38,9 @@ import db.MarkerDB;
 import db.RequestDB;
 import db.RouteDB;
 import db.UserDB;
+
+import com.googlecode.htmlcompressor.*;
+import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 /**
  * Class to create, update and destroy offers. Only accessible if logged in.
  *
@@ -58,21 +63,21 @@ public class Angebote extends Controller{
     	return ok(angebotAnzeigen.render(tempRoute,form));
 	}
     /**
-     * Method to return a list of all routes in the database. 
-     * Those routes will then be display on the map.
+     * Method to display the page where a drive can create an offer.
      * @return The Angebote page with a list of all markers in the database.
      */
 	@With({Driver.class})
     public static Result  createOffer(){
 		Form<Route> form = Form.form(Route.class);
-
-    	RouteDB routes = RouteDB.getInstance();
-		DBCursor<Route> cursor =  routes.findNative(new BasicDBObject());
-		ArrayList<Route> routesList = (ArrayList<Route>) cursor.toArray();
 		HashMap<String, String> fixedPoints = FixedPointDB.getInstance().getAllFixedPoints();
-
+//		String output = angebotErstellen.render(form, fixedPoints).body().trim();
+//		HtmlCompressor compressor = new HtmlCompressor();
+//	    compressor.setPreserveLineBreaks(true);
+//
+//		output = compressor.compress(output);
 		
-		return ok(angebotErstellen.render(routesList, form, fixedPoints));
+		
+		return ok(angebotErstellen.render(form, fixedPoints));
     }
     
     /**
@@ -93,8 +98,10 @@ public class Angebote extends Controller{
 		for(int i = 0; i < routesList.size(); i++){
 			Route tempRoute=routesList.get(i).fetch();
 			if(tempRoute._id.equals(id)){
+				
 				List<DBRef<Marker, String>> markerList = tempRoute.wegpunkte;
-
+				Marker muhme = tempRoute.zielAdresse.fetch();
+				Logger.info(muhme._id+"asdasd");
 				if(!fixedPoints.containsKey(tempRoute.startAdresse.fetch()._id)){
 					//delete the start address marker
 					markers.delete(tempRoute.startAdresse.fetch()._id);
@@ -104,6 +111,7 @@ public class Angebote extends Controller{
 					markers.delete(tempRoute.zielAdresse.fetch()._id);
 				}			
 				
+				
 				//delete all waypoint markers
 				for(int z = 0; z < markerList.size(); z++){
 					Marker tempMarker = markerList.get(z).fetch();
@@ -112,19 +120,25 @@ public class Angebote extends Controller{
 				//delete all requests
 				for(int z = 0; z < tempRoute.requests.size(); z++){
 					Request tempRequest = tempRoute.requests.get(z).fetch();
+					User tempUser = tempRoute.requests.get(z).fetch().requestingUser.fetch();
+					
 					//quite stupid and inefficient, no other idea though
-					List<DBRef<Request, String>> meh = tempRequest.requestingUser.fetch().requests;
+					List<DBRef<Request, String>> meh = tempUser.requests;
 					for(int j = 0; j < meh.size(); j++){
 						if(meh.get(j).fetch()._id.equals(tempRequest._id)){
 							meh.remove(j);
+							Logger.info(user.requests.size()+"");
+							tempUser.requests = meh;
+							Logger.info(user.requests.size()+"");
+							users.save(tempUser);
 						}
 					}
-					user.requests = meh;
 					requests.delete(tempRequest._id);
 				}
 				//remove the route from the users collection
 				user.routes.remove(i);
 				users.save(user);
+
 				//delete the route
 				routes.delete(tempRoute._id);
 				break;
@@ -142,7 +156,7 @@ public class Angebote extends Controller{
     	String sessionID = session().get("sessionID");
     	UserDB users = UserDB.getInstance();
 		ArrayList<Route> routesList = users.getRoutesForUser(sessionID);
-		ArrayList<Request> requestList = users.getRequestsForUser(sessionID);
+		ArrayList<Request> requestList = users.getRequestsForUser(sessionID, true);
 		return ok(meineAngebote.render(routesList, requestList));
     }
     
@@ -153,8 +167,8 @@ public class Angebote extends Controller{
 
     	Form<Route> responseData = Form.form(Route.class);
     	Form<Route> responseDataFilled = responseData.fill(tempRoute);
-    	
-		return ok(angebotAendern.render(tempRoute, responseDataFilled));
+		HashMap<String, String> fixedPoints = FixedPointDB.getInstance().getAllFixedPoints();
+		return ok(angebotAendern.render(tempRoute, responseDataFilled,fixedPoints));
     }
     
     /**
@@ -192,20 +206,20 @@ public class Angebote extends Controller{
     	
 		List<DBRef<Route, String>> routesList = user.routes;
     	if(requestData.hasErrors()){
+    		Logger.info(requestData.toString());
     		return badRequest();
     	}
     	
     	HashMap<String, String> requestMap = (HashMap<String, String>) requestData.data();
-
+		HashMap<String, String> fixedPoints = FixedPointDB.getInstance().getAllFixedPoints();
     	try{
     		routeListCreator.updateRoute(id, requestMap, routes, markers, routesList);
     	}catch(AddressNotFoundException e){
-
     		flash("errors","Ungültige Adresse eingegeben.");
     		Route tempRoute = buildRequestedOffer(id);
         	Form<Route> responseData = Form.form(Route.class);
         	Form<Route> responseDataFilled = responseData.fill(tempRoute);
-    		return badRequest(angebotAendern.render(tempRoute, responseDataFilled));
+    		return badRequest(angebotAendern.render(tempRoute, responseDataFilled,fixedPoints));
     	} catch (ParseException e) {
     		Route tempRoute = buildRequestedOffer(id);
         	Form<Route> responseData = Form.form(Route.class);
@@ -215,7 +229,7 @@ public class Angebote extends Controller{
     		}else{
     			flash("errors","Ungültiges Datums- oder Uhrzeitformt eingegeben.");
     		}
-			return badRequest(angebotAendern.render(tempRoute, responseDataFilled));
+			return badRequest(angebotAendern.render(tempRoute, responseDataFilled,fixedPoints));
 		}
     	
 		flash("success","Angebot erfolgreich gespeichert.");
@@ -233,12 +247,13 @@ public class Angebote extends Controller{
      */
 	@With({Driver.class})
     public static Result createRoute(){
+		Lang.apply("de");
     	String sessionID = session().get("sessionID");
     	//DynamicForm requestData = Form.form().bindFromRequest();
     	Form<Route> requestData = Form.form(Route.class);
         UserDB users = UserDB.getInstance();
-
-		ArrayList<Route> routesList = users.getRoutesForUser(sessionID);
+      
+//        ArrayList<Route> routesList = users.getRoutesForUser(sessionID);
 		
     	requestData = requestData.bindFromRequest();
 		Logger.info(requestData.data().toString());
@@ -253,25 +268,30 @@ public class Angebote extends Controller{
             	requestData.reject("zielAdresse", "Keine Zieladresse eingegeben.");
         	}
         }
+
 		HashMap<String, String> fixedPoints = FixedPointDB.getInstance().getAllFixedPoints();
 
         if(requestData.hasErrors()) {
-            return badRequest(angebotErstellen.render(routesList, requestData, fixedPoints));
+        	Logger.info(requestData.errorsAsJson().toString());
+            return badRequest(angebotErstellen.render(requestData, fixedPoints));
 	    } else {
-	    	HashMap<String, String> requestDataMap = (HashMap<String, String>) requestData.data();
-	      
+    		HashMap<String, String> requestDataMap = (HashMap<String, String>) requestData.data();
 	    	
 	        //get instances
 	        RouteDB routesInstance = RouteDB.getInstance();
 	        Route tempRoute;
 	    	try{
-	    		new Route().setDateTime(requestDataMap.get("timeForm"), requestDataMap.get("dateForm"));
-		        tempRoute  = routeListCreator.createRouteFromSubmittedMarkers(requestDataMap);
+//	    		new Route().setTimeAndValidate(requestDataMap.get("timeForm"));
+	    		Form<Route> form = requestData.bindFromRequest();
+	    		//not too cool
+		        Route routeOnlyForDate = form.get();
+		        
+	    		tempRoute  = routeListCreator.createRouteFromSubmittedMarkers(requestDataMap, routeOnlyForDate);
 
 
 	    	}catch(AddressNotFoundException e){
 	    		flash("errors","Ungültige Adresse eingegeben.");
-				return badRequest(angebotErstellen.render(routesList, requestData, fixedPoints));
+				return badRequest(angebotErstellen.render(requestData, fixedPoints));
 	    	}
 	    	catch (ParseException e) {
 	    		if(e.toString().matches(".*Date in past.")){
@@ -279,7 +299,7 @@ public class Angebote extends Controller{
 	    		}else{
 	    			flash("errors","Ungültiges Datums- oder Uhrzeitformt eingegeben.");
 	    		}
-				return badRequest(angebotErstellen.render(routesList, requestData, fixedPoints));
+				return badRequest(angebotErstellen.render(requestData, fixedPoints));
 			}
 	        
 	        //get the current user which we need later one to give him the route
@@ -294,7 +314,6 @@ public class Angebote extends Controller{
 	        tempUser.routes.add(routeDBRef);    
 	        users.save(tempUser);
 	        
-	        routesList = users.getRoutesForUser(sessionID);
 	    	flash("success","Angebot erfolgreich erstellt.");
 	        return redirect(controllers.routes.Angebote.myOffers());
 	    }

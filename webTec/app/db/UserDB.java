@@ -66,13 +66,21 @@ public class UserDB extends Finder<User>{
 	/**
 	 * Method to fetch all requests for a user, identified by his sessionID
 	 * @param LoggedInHashKey The sessionID key.
+	 * @param approvedRequestsOnly If set only adds approved requests to the list.
 	 * @return An ArrayList with all his requests.
 	 */
-	public ArrayList<Request> getRequestsForUser(String LoggedInHashKey){
+	public ArrayList<Request> getRequestsForUser(String LoggedInHashKey, boolean approvedRequestsOnly){
 		User tempUser = findByLoggedInHashKey(LoggedInHashKey);
 		ArrayList<Request> tempList = new ArrayList<Request>();
 		for(int z = 0; z < tempUser.requests.size(); z++){
-			tempList.add(tempUser.requests.get(z).fetch());
+			if(approvedRequestsOnly){
+				if(tempUser.requests.get(z).fetch().status.equals("Anfrage akzeptiert.")){
+					tempList.add(tempUser.requests.get(z).fetch());
+					Logger.info(tempUser.requests.get(z).fetch().status);
+				}
+			}else{
+				tempList.add(tempUser.requests.get(z).fetch());
+			}
 		}
 
 		return tempList;

@@ -7,8 +7,8 @@
 <div class="starter-template">
     <h1>Aktuelle Angebote</h1>
 </div>
-
-@_displayOffer(Route)("")("4")
+<div id="@{Route._id}" class="cold-md-12">
+	@_displayOffer(Route)("")("4")
 
 @Route.wegpunkteForm.add(0, Route.startAdresse.fetch().name)
 
@@ -26,28 +26,31 @@
 	                'min -> "1",
 	                '_label -> "Sitzplätze", 
 	                '_error -> requestForm.error("seats"),
-	                '_class -> "form-group"
+	                '_class -> "form-group",
+   	                '_help -> ""
+	                
 	            )
 				@select(
 				   requestForm("startAddressForm"),
 				   options = options(Route.wegpunkteForm),
 				   'class -> "form-control",				
 				   '_label -> "Von",
-	                '_class -> "form-group"
+	                '_class -> "form-group",
+	                '_help -> ""
 				)
-			<input type="hidden" value=@Route.wegpunkteForm.add(Route.zielAdresse.fetch().name)@Route.wegpunkteForm.remove(0)>
+			@{Route.wegpunkteForm.add(Route.zielAdresse.fetch().name);val meh =Route.wegpunkteForm.remove(0)}
 				@select(
 				   requestForm("destinationAddressForm"),
 				   options = options(Route.wegpunkteForm),
 	                'class -> "form-control", 
 				   '_label -> "Nach",
-				   '_class -> "form-group"			
-				   
+				   '_class -> "form-group",			
+   	                '_help -> ""
 				)
         </fieldset>
         <div class="actions form-group">
 			<input type="submit" class="btn btn-default" id="abschicken" value="Mitfahrgelegenheit anfragen.">
-			<input type="hidden" value=@{Route._id} class="omm_value-offer">
+			<input type="hidden" value="@{Route._id}" class="omm_value-offer">
 		</div>
 
     }		
@@ -57,75 +60,7 @@
 	<script type="text/javascript"
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjsbaoEWBxF2oxvLEenqLjERjfJICyyWg&sensor=true">
 	</script>
-    <script type="text/javascript">
-	$(document).ready(function(){
-		var map;
-	    function initialize() {
-
-	        var mapOptions = {
-	        center: new google.maps.LatLng(47.693934,8.946791),
-	        zoom: 13,
-	            mapTypeId: google.maps.MapTypeId.ROADMAP
-	    	};
-			
-
-	       	map = new google.maps.Map(document.getElementById("map-canvas@{Route._id}"), mapOptions);
-
-			var tempAddress= $(document).find('.omm_start-address').val().split("/");
-			
-			var lat = tempAddress[0];
-			var lng = tempAddress[1];
-			var start = new google.maps.LatLng(lng, lat);
-			tempAddress= $(document).find(".omm_destination-address").val().split("/");
-
-			lat = tempAddress[0];
-			lng = tempAddress[1];
-			var end = new google.maps.LatLng(lng, lat);
-
-			var waypointsLatLng = $(document).find('.omm_waypoints-address').val().split("//");
-
-			var waypoints = new Array();
-
-			 //iterate over markers for routes
-			for (var i=0;i<waypointsLatLng.length-1;i++){
-				var waypoint = waypointsLatLng[i].split("/");
-				waypoints.push({location:new google.maps.LatLng(waypoint[1], waypoint[0]),stopover:true})
-			}
-			 var request = {
-				origin:start,
-				destination:end,
-				 waypoints: waypoints,
-				travelMode: google.maps.TravelMode.DRIVING
-				};
-			calcRoute(request, map);
-	    }
-
-	    function calcRoute(request, map){
-	    	 var directionsDisplay;
-	    	 var directionsService = new google.maps.DirectionsService();
-	    	  
-	    	 directionsDisplay = new google.maps.DirectionsRenderer();
-	    	 directionsDisplay.setMap(map);
-	    	 directionsService.route(request, function(result, status) {
-	    		    if (status == google.maps.DirectionsStatus.OK) {
-	    		      	directionsDisplay.setDirections(result);
-	    		      	
-	  		       		google.maps.event.addListenerOnce(map, 'idle', function() {
-	 		       	   		google.maps.event.trigger(map, 'resize');
-	 		       	   		var bounds = result.routes[0].bounds;
-	    		      		map.fitBounds(bounds);
-	    		      		map.setCenter(bounds.getCenter());
-	 		       		});
-	    		    }else{
-
-	    		       console.log("route failed. status:" +status +" result:" +result);
-	    		    }
-	    		  });
-	    }
-	    initialize();
-	});
-
-
-
-    </script>
+ 	<script type="text/javascript" src="/assets/javascripts/omm_mapCanvases.js"></script>
+ 	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+ 	
  }
