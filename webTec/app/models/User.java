@@ -18,7 +18,7 @@ public class User extends Entity{
 	public String email;
 	
 	@Constraints.Required
-	@MinLength(6)
+//	@MinLength(6)
 	public String password;
 	
 	@Constraints.Required

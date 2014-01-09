@@ -88,7 +88,6 @@ public class RouteAndMarkerHelpers {
 	        	}
 	            Promise<String> resultPromise;
 	            
-
 	            Marker tempMarker;
 
 	            if(key.equals("startAdresseForm") || key.equals("startAdresseFormSelect")){
@@ -123,7 +122,8 @@ public class RouteAndMarkerHelpers {
 	}
 
 	/**
-	 * Method to update a given route.
+	 * Method to update a given route. Iterate over the request map and find the things which need to be updated. 
+	 * Always need to test if a dropdown value is selected.
 	 * @param id The id of the route to update.
 	 * @param requestMap The submitted request, mapped to a HashMap.
 	 * @param routes A routeDB instance.
@@ -136,59 +136,70 @@ public class RouteAndMarkerHelpers {
 			RouteDB routes, MarkerDB markers,
 			List<DBRef<Route, String>> routesList) throws AddressNotFoundException, ParseException {
 		LinkedList<String> waypoints = new LinkedList<String>();
-		for(int i = 0; i < routesList.size(); i++){
-			Route tempRoute=routesList.get(i).fetch();
-			if(tempRoute._id.equals(id)){
-				Date tempTime = dateHelper.parseDateAndTime(requestMap.get("timeForm"));
-				Date tempDate = new SimpleDateFormat("yyyy-MM-dd").parse(requestMap.get("dateForm"));
-				if(tempDate.compareTo(tempRoute.dateForm) != 0){
-					tempRoute.dateForm=new SimpleDateFormat("yyyy-MM-dd").parse(requestMap.get("dateForm"));
-					routes.save(tempRoute);
-				}
-				if(tempTime.compareTo(tempRoute.time) != 0){
-					tempRoute.setTimeAndValidate(requestMap.get("timeForm"));
-					tempRoute.timeForm=requestMap.get("timeForm");
-					routes.save(tempRoute);
-				}
-				
-				//iterating over request necessary? Could get the specific key, but would need to
-				//iterate over the request anyways for the waypoints.
-				//save route only, when we really changed something! No unnecessary database transactions.
-				for (String key : requestMap.keySet()) {
-		        	if(key.equals("timeForm") || key.equals("dateForm")){
-		        		continue;
-		        	}
-		        	if(key.equals("startAdresseForm")){
+		//get our route
+		Route tempRoute=routes.findById(id);
+		Date tempTime = dateHelper.parseDateAndTime(requestMap.get("timeForm"));
+		Date tempDate = new SimpleDateFormat("yyyy-MM-dd").parse(requestMap.get("dateForm"));
+		if(tempDate.compareTo(tempRoute.dateForm) != 0){
+			tempRoute.dateForm=new SimpleDateFormat("yyyy-MM-dd").parse(requestMap.get("dateForm"));
+			routes.save(tempRoute);
+		}
+		if(tempTime.compareTo(tempRoute.time) != 0){
+			tempRoute.setTimeAndValidate(requestMap.get("timeForm"));
+			tempRoute.timeForm=requestMap.get("timeForm");
+			routes.save(tempRoute);
+		}
+		
+		//iterating over request necessary? Could get the specific keys, but would need to
+		//iterate over the request anyways for the waypoints.
+		//save route only, when we really changed something! No unnecessary database transactions.
+		for (String key : requestMap.keySet()) {
+        	if(key.equals("timeForm") || key.equals("dateForm")){
+        		continue;
+        	}
+            if(key.equals("startAdresseForm") || key.equals("startAdresseFormSelect")){
+            	if(key.equals("startAdresseForm") && requestMap.get("startAdresseFormSelect") == ""){
+	        		String startAdresseForm = requestMap.get(key);
+					if(!tempRoute.startAdresse.fetch().name.equals(startAdresseForm)){
+						updateStartAddress(routes, markers, tempRoute, startAdresseForm);
+						routes.save(tempRoute);
+					}	
+            	} else if(key.equals("startAdresseFormSelect") && requestMap.get("startAdresseFormSelect") != ""){
+					if(!tempRoute.startAdresse.fetch()._id.equals(requestMap.get(key))){
+		            	tempRoute.startAdresse = new DBRef<Marker, String>(markers.findById(requestMap.get(key))._id, Marker.class);	
+						routes.save(tempRoute);
+					}	
+            	}
+			 }else if(key.equals("zielAdresseForm") || key.equals("zielAdresseFormSelect")){
+	            	if(key.equals("zielAdresseForm") && requestMap.get("zielAdresseFormSelect") == ""){
+	            		Logger.info(key);
 		        		String startAdresseForm = requestMap.get(key);
-						if(!tempRoute.startAdresse.fetch().name.equals(startAdresseForm)){
+						if(!tempRoute.zielAdresse.fetch().name.equals(startAdresseForm)){
 							updateStartAddress(routes, markers, tempRoute, startAdresseForm);
-						}
-					 }else if(key.equals("zielAdresseForm")){
-						String zielAdresseForm = requestMap.get(key);
-						if(!tempRoute.zielAdresse.fetch().name.equals(zielAdresseForm)){
-							updateDestinationAddress(routes, markers, tempRoute, zielAdresseForm);
-						}
-					 }else if(key.equals("seats")){
-						 Logger.info("dum");
-						int seats = Integer.parseInt(requestMap.get("seats"));
-						if(tempRoute.seats != seats){
-							tempRoute.seats = seats;
 							routes.save(tempRoute);
-						}
-					 }
-					 else{
-						waypoints.add(requestMap.get(key));
-					 }
+						}	
+	            	} else if(key.equals("zielAdresseFormSelect") && requestMap.get("zielAdresseFormSelect") != ""){
+						if(!tempRoute.zielAdresse.fetch()._id.equals(requestMap.get(key))){
+			            	tempRoute.zielAdresse = new DBRef<Marker, String>(markers.findById(requestMap.get(key))._id, Marker.class);	
+							routes.save(tempRoute);
+						}	
+	            	}
+			 }else if(key.equals("seats")){
+				int seats = Integer.parseInt(requestMap.get("seats"));
+				if(tempRoute.seats != seats){
+					tempRoute.seats = seats;
+					routes.save(tempRoute);
 				}
-				
-				//do we have waypoints?
-				if(waypoints.size() > 0){
-					//set our updated waypoints.
-					updateWaypoints(tempRoute, waypoints);
-				}
-				break;
-			}
-
+			 }
+			 else{
+				waypoints.add(requestMap.get(key));
+			 }
+		}
+		
+		//do we have waypoints?
+		if(waypoints.size() > 0){
+			//set our updated waypoints.
+			updateWaypoints(tempRoute, waypoints);
 		}
 	}
 	

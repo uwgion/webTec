@@ -5,30 +5,30 @@
 
 @main("HÃ¶riMit") {
 <div class="starter-template">
-    <h1>Aktuelle Angebote</h1>
+    <h1>Angebot erstellen</h1>
 </div>
 	<div class="row">
-		     @helper.form(action = routes.Angebote.createRoute, 'class -> "col-md-4 form-group") {
+		     @helper.form(action = routes.Angebote.createRoute, 'class -> "col-md-8 form-group") {
 		       
 		        <fieldset>
-		            <legend>Kontodetails</legend>
-		            
+		            <legend>Angebotdetails</legend>
 		            @inputText(
 		                angebotForm("startAdresseForm"), 
 		                'placeholder -> "Bitte eine Zieladresse eingeben.",
 		                'class -> "form-control",
 		                '_label -> "Startadresse", 
 		                '_error -> angebotForm.error("startAdresse"),
-		                '_help -> ""
+		                '_help -> "",
+		                '_class -> "col-md-6"
 		            )
 		            @select(
 						angebotForm("startAdresseFormSelect"),
 						options = options(fixedPoints),
 						'class -> "form-control",				
 						'_label -> "Von",
-	                	'_default -> "Bitte auswählen."
+	                	'_default -> "Bitte auswählen.",
+		                '_class -> "col-md-6"
 					)
-		            
 					<div id="wegpunkte"></div>
 		            
 		            @inputText(
@@ -37,7 +37,8 @@
 		                'class -> "form-control",
 		                '_label -> "Zieladresse", 
 		                '_error -> angebotForm.error("zielAdresse"),
-		                '_help -> ""
+		                '_help -> "",
+		                '_class -> "col-md-6"
 		            )
 		            
 		           	@select(
@@ -45,7 +46,8 @@
 						options = options(fixedPoints),
 						'class -> "form-control",				
 						'_label -> "Nach",
-	                	'_default -> "Bitte auswählen."
+	                	'_default -> "Bitte auswählen.",
+		                '_class -> "col-md-6"
 					)
 					
 		            @inputText(
@@ -54,7 +56,8 @@
 		                'class -> "form-control",
 		                '_label -> "Zeit", 
 		                '_error -> angebotForm.error("zeit"),
-		                '_help -> ""		                
+		                '_help -> "",
+		                '_class -> "col-md-4"
 		            )
 		            @inputDate(
 		                angebotForm("dateForm"), 
@@ -62,7 +65,8 @@
 		                'class -> "form-control",
 		                '_label -> "Datum", 
 		                '_error -> angebotForm.error("datum"),
-		                '_help -> ""
+		                '_help -> "",
+		                '_class -> "col-md-4"
 		            )
 		            @inputText(
 		                angebotForm("seats"), 
@@ -73,13 +77,14 @@
 		                'min -> "1",
 		                '_label -> "Sitzplätze", 
 		                '_error -> angebotForm.error("seats"),
-		                '_help -> ""
+		                '_help -> "",
+		                '_class -> "col-md-4"
 		            )
-		        </fieldset>
-		        <div class="actions">
-					<input type="submit" class="btn btn-default" value="Mitfahrgelegenheit eintragen.">
+		        <div class="actions col-md-8">
 					<input type="button" id="wegPunkteHinzufuegen" class="btn btn-default" value="Wegpunkte hinfzufügen."></button>
+					<input type="submit" class="btn btn-default" value="Mitfahrgelegenheit eintragen.">
 				</div>
+		        </fieldset>
 		
 		    }
 		<div class="col-md-8 form-group" style="height:630px" id="map-canvas"></div>

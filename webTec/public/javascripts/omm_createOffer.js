@@ -37,13 +37,24 @@ $(document).ready(function(){
     $("#wegPunkteHinzufuegen").click(function(){
     	counter += 1;
     	var html = $("#wegpunkte").html();
-    	html += '<div class="clearfix form-group"><label for="wegpunkte'+counter+'">Über</label>';
-    	html += '<div class="input"><input class="form-control" name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="Über Adresse"></div>';
-    	html += '<span class="help-block">Required</span></div>';
+    	html += '<div class="waypoints"><div class="clearfix col-md-6"><label for="wegpunkte'+counter+'">Über</label>';
+    	html += '<div class="input"><input class="form-control" name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="Über Adresse">';
+    	html += '<span class="help-inline"></span><span class="help-block"></span></div>'
+    	html += '</div><div class="clearfix col-md-6" id="wegpunkte'+counter+'Select_field"><label for="wegpunkte'+counter+'Select">Über</label><div class="input" id="wegpunkte'+counter+'"Select>';
+    	html += '<select class="form-control" id="wegpunkte'+counter+'Select" disabled="disabled"><option>test</option></select><span class="help-inline"></span><span class="help-block"></span></div></div>'
+    	html += '</div>';
     	$("#wegpunkte").html(html);
 
     });
-
+	$(":submit").click(function(){
+		console.log("suchen");
+		$(document).find(".waypoints").each(function(key, value){
+			console.log(value);
+			if($(value).find(":input").val()==""){
+				$(this).remove();
+			}
+		});
+	});
     function placeMarker(location, map) {
       var marker = new google.maps.Marker({
           position: location,

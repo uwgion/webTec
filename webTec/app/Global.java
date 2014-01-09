@@ -31,7 +31,6 @@ public class Global extends GlobalSettings {
 		fixed.marker = new DBRef<Marker, String>(tempMarker._id, Marker.class);
 		fixedpoints.create(fixed);
 		
-		
 	}
 
 	public void onStop(Application app) {

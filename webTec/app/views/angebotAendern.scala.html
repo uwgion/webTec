@@ -8,89 +8,109 @@
     <h1>Mitfahrgelegenheit ändern</h1>
 </div>
 
-     @helper.form(action = routes.Angebote.changeOffer(Route._id), 'Id -> "changeForm", 'class -> "form-group col-md-4") {
-       
-        <fieldset>
-            <legend>Mitfahrgelegenheit Details</legend>
-            @inputText(
-                angebotForm("startAdresseForm"), 
-                'placeholder -> "Bitte eine Zieladresse eingeben.",
-                'class -> "form-control",
-                '_label -> "Startadresse", 
-                '_error -> angebotForm.error("startAdresse")
-            )
-            
-		    @select(
-				angebotForm("startAdresseFormSelect"),
-				options = options(fixedPoints),
-				'class -> "form-control",				
-				'_label -> "Von",
-               	'_default -> "Bitte auswählen."
-			)    
-			    
-            @for(key <- 0 to Route.wegpunkte.size()-1){
-            	<div class="clearfix form-group" id="wegpunkt@{key}_field">
-				    <label for="wegpunkt@{key}">Wegpunkt @{key+1}</label>
-				    <div class="input">		        
-				    <input id="wegpunkt@{key}" class="form-control" name="wegpunkt@{key}" value="@{Route.wegpunkteForm.get(key)}" type="text">			
-				        <span class="help-inline"></span>
-				        <span class="help-block">Required</span> 
-				    </div>
-				</div>
-            }
-			<div id="wegpunkte"></div>
-            
-
+     @helper.form(action = routes.Angebote.changeOffer(Route._id), 'Id -> "changeForm", 'class -> "form-group col-md-8") {
+ 		       
+		        <fieldset>
+		            <legend>Angebotdetails</legend>
+		            @inputText(
+		                angebotForm("startAdresseForm"), 
+		                'placeholder -> "Bitte eine Zieladresse eingeben.",
+		                'class -> "form-control",
+		                '_label -> "Startadresse", 
+		                '_error -> angebotForm.error("startAdresse"),
+		                '_help -> "",
+		                '_class -> "col-md-6"
+		            )
+		            @select(
+						angebotForm("startAdresseFormSelect"),
+						options = options(fixedPoints),
+						'class -> "form-control",				
+						'_label -> "Von",
+	                	'_default -> "Bitte auswählen.",
+		                '_class -> "col-md-6"
+					)
+					@for(key <- 0 until Route.wegpunkte.size()){
+				    	<div class="waypoints"><div class="clearfix col-md-6"><label for=wegpunkt@{key}">Wegpunkt @{key+1}</label>
+						   	<div class="input"><input class="form-control" name="wegpunkte'+counter+'" id="wegpunkt@{key}" type="text" placeholder="Über Adresse" value="@{Route.wegpunkteForm.get(key)}">
+						   	<span class="help-inline"></span><span class="help-block"></span></div>
+						   	</div><div class="clearfix col-md-6" id="wegpunkt@{key}Select_field"><label for="wegpunkt@{key}Select">Wegpunkt @{key+1}</label>
+						   	<div class="input" id="wegpunkte'+counter+'"Select>
+						   	<select class="form-control" id="wegpunkt@{key}Select" disabled="disabled"><option>test</option></select><span class="help-inline"></span><span class="help-block"></span></div></div>
+				    	</div>
+					}
+					<div id="wegpunkte"></div>
 		            
-            @inputText(
-                angebotForm("zielAdresseForm"), 
-                'placeholder -> "Bitte eine Startadresse eingeben.",
-                'class -> "form-control",
-                '_label -> "Zieladresse", 
-                '_error -> angebotForm.error("zielAdresse")
-            )
-           	@select(
-				angebotForm("zielAdresseFormSelect"),
-				options = options(fixedPoints),
-				'class -> "form-control",				
-				'_label -> "Nach",
-               	'_default -> "Bitte auswählen."
-			)        
-            @inputText(
-                angebotForm("timeForm"), 
-                'placeholder -> "Bitte eine Uhrzeit eingeben im Format hh:mm",
-                'class -> "form-control",
-                '_label -> "Zeit", 
-                '_error -> angebotForm.error("zeit")
-            )
-            @inputDate(
-                angebotForm("dateForm"), 
-                'placeholder -> "Bitte ein Datum eingeben im Format tt.mm.yyyy",
-                'class -> "form-control",
-                '_label -> "Datum", 
-                '_error -> angebotForm.error("datum")
-            )
-            @inputText(
-                angebotForm("seats"), 
-				'placeholder -> "Verfügbare Sitzplätze",
-                'class -> "form-control",
-                'type -> "number",
-                'max -> "9",
-                'min -> "1",
-                '_label -> "Sitzplätze", 
-                '_error -> angebotForm.error("seats")
-            )
-        </fieldset>
-        <div class="actions">
-			<input type="submit" class="btn btn-default" id="abschicken" value="Mitfahrgelegenheit ï¿½ndern.">
-			<input type="hidden" value=@{Route._id} class="omm_value-offer">
-			<input type="button" id="wegPunkteHinzufuegen" class="btn btn-default" value="Wegpunkte hinfzufï¿½gen.">
-		</div>
-
+		            @inputText(
+		                angebotForm("zielAdresseForm"), 
+		                'placeholder -> "Bitte eine Startadresse eingeben.",
+		                'class -> "form-control",
+		                '_label -> "Zieladresse", 
+		                '_error -> angebotForm.error("zielAdresse"),
+		                '_help -> "",
+		                '_class -> "col-md-6"
+		            )
+		            
+		           	@select(
+						angebotForm("zielAdresseFormSelect"),
+						options = options(fixedPoints),
+						'class -> "form-control",				
+						'_label -> "Nach",
+	                	'_default -> "Bitte auswählen.",
+		                '_class -> "col-md-6"
+					)
+					
+		            @inputText(
+		                angebotForm("timeForm"), 
+		                'placeholder -> "Bitte eine Uhrzeit eingeben im Format hh:mm",
+		                'class -> "form-control",
+		                '_label -> "Zeit", 
+		                '_error -> angebotForm.error("zeit"),
+		                '_help -> "",
+		                '_class -> "col-md-4"
+		            )
+		            @inputDate(
+		                angebotForm("dateForm"), 
+		                'placeholder -> "Bitte ein Datum eingeben im Format tt.mm.yyyy",
+		                'class -> "form-control",
+		                '_label -> "Datum", 
+		                '_error -> angebotForm.error("datum"),
+		                '_help -> "",
+		                '_class -> "col-md-4"
+		            )
+		            @inputText(
+		                angebotForm("seats"), 
+						'placeholder -> "Verfügbare Sitzplätze",
+		                'class -> "form-control",
+		                'type -> "number",
+		                'max -> "9",
+		                'min -> "1",
+		                '_label -> "Sitzplätze", 
+		                '_error -> angebotForm.error("seats"),
+		                '_help -> "",
+		                '_class -> "col-md-4"
+		            )
+		        <div class="actions col-md-8">
+					<input type="button" id="wegPunkteHinzufuegen" class="btn btn-default" value="Wegpunkte hinfzufügen."></button>
+					<input type="submit" class="btn btn-default" value="Mitfahrgelegenheit eintragen.">
+				</div>
+		        </fieldset>
     }
-    <script type="text/javascript">
+   	<div id="map-canvas@{Route._id}" class="col-md-12 map-canvas" style="height:400px;"></div>
     
-     //set counter for additional waypoints, delimiter will be "//"
+ 	<script type="text/javascript" src="/assets/javascripts/omm_createOffer.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+    	//$("#startAdresseFormSelect").val('Radolfzell Bahnhof');
+    	$("input").each(function(key, value){
+    		var text = $(value).val();
+    		var id = $(value).attr('id');
+    		console.log(id);
+    		console.log($("#"+id+"Select"));
+    		$("#"+id+"Select option:contains("+text+")").attr('selected', true);
+    	});
+    	//$("#startAdresseFormSelect option:contains('Radolfzell Bahnhof')").attr('selected', true);
+    });
+/*     //set counter for additional waypoints, delimiter will be "//"
     var counter = 0;
     $("#wegPunkteHinzufuegen").click(function(){
     	counter += 1;
@@ -101,7 +121,7 @@
 	   	$("#wegpunkte").html(html);
 
     });
-/*	$("#abschicken").click(function(event){
+	$("#abschicken").click(function(event){
 		event.preventDefault();
 		var id = $(this).parent().find(".omm_value-offer").val();
 		console.log(id);
