@@ -23,21 +23,24 @@
                 loginForm("username"), 
                 'placeholder -> "Bitte Benutzernamen eingeben.",
                 'class -> "form-control",
-                '_label -> "Username", 
-                '_error -> loginForm.error("username")
+                '_label -> "Benutzername", 
+                '_error -> loginForm.error("username"),
+                '_help -> ""
             )
             
             @inputPassword(
                 loginForm("password"), 
                 'placeholder -> "Bitte Passwort eingeben.",
                 'class -> "form-control",
-                '_label -> "Password"
+                '_label -> "Passwort",
+                '_help -> ""
+            
             )
 
              @checkbox(
                 loginForm("remember"), 
                 'class -> "checkbox",
-                '_label -> "Remember me"
+                '_label -> "Angemeldet bleiben"
             )
             
             <input type="hidden" value="a@@a.a" name="email" />

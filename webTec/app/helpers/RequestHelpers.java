@@ -5,8 +5,6 @@ import models.Route;
 
 import org.mongojack.DBRef;
 
-import play.Logger;
-
 public class RequestHelpers {
 
 	public DBRef<Marker, String> findMarkerForString(Route route, String address){

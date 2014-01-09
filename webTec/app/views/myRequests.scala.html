@@ -24,6 +24,7 @@
 		</div>
 </fieldset>
 <div class="row"></div>
+@if(session.get("driver") == "true"){
 <fieldset>
 	<legend>Eingegangene Anfragen</legend>
 	<div id="omm_thema-table" class="panel-group">
@@ -46,4 +47,5 @@
 		}
 	</div>
 </fieldset>
+}
 }

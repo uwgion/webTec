@@ -1,9 +1,7 @@
 package helpers;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -24,6 +22,7 @@ import play.libs.WS;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.BasicDBObject;
 
+import db.FixedPointDB;
 import db.MarkerDB;
 import db.RouteDB;
 
@@ -130,25 +129,17 @@ public class RouteAndMarkerHelpers {
 	 * @param markers A markerDB instance.
 	 * @param routesList A list with all routes for the user who submitted the form.
 	 * @throws AddressNotFoundException 
-	 * @throws ParseException 
+	 * @throws ParseException Exception to be thrown if a date or time is invalid.
 	 */
 	public void updateRoute(String id, HashMap<String, String> requestMap,
 			RouteDB routes, MarkerDB markers,
 			List<DBRef<Route, String>> routesList) throws AddressNotFoundException, ParseException {
 		LinkedList<String> waypoints = new LinkedList<String>();
+		FixedPointDB fixedpoints = FixedPointDB.getInstance();
 		//get our route
 		Route tempRoute=routes.findById(id);
-		Date tempTime = dateHelper.parseDateAndTime(requestMap.get("timeForm"));
-		Date tempDate = new SimpleDateFormat("yyyy-MM-dd").parse(requestMap.get("dateForm"));
-		if(tempDate.compareTo(tempRoute.dateForm) != 0){
-			tempRoute.dateForm=new SimpleDateFormat("yyyy-MM-dd").parse(requestMap.get("dateForm"));
-			routes.save(tempRoute);
-		}
-		if(tempTime.compareTo(tempRoute.time) != 0){
-			tempRoute.setTimeAndValidate(requestMap.get("timeForm"));
-			tempRoute.timeForm=requestMap.get("timeForm");
-			routes.save(tempRoute);
-		}
+		//update date and time
+		dateHelper.updateTimeAndDate(routes, tempRoute, requestMap.get("dateForm"), requestMap.get("timeForm"));
 		
 		//iterating over request necessary? Could get the specific keys, but would need to
 		//iterate over the request anyways for the waypoints.
@@ -168,11 +159,11 @@ public class RouteAndMarkerHelpers {
 					if(!tempRoute.startAdresse.fetch()._id.equals(requestMap.get(key))){
 		            	tempRoute.startAdresse = new DBRef<Marker, String>(markers.findById(requestMap.get(key))._id, Marker.class);	
 						routes.save(tempRoute);
+						
 					}	
             	}
 			 }else if(key.equals("zielAdresseForm") || key.equals("zielAdresseFormSelect")){
 	            	if(key.equals("zielAdresseForm") && requestMap.get("zielAdresseFormSelect") == ""){
-	            		Logger.info(key);
 		        		String startAdresseForm = requestMap.get(key);
 						if(!tempRoute.zielAdresse.fetch().name.equals(startAdresseForm)){
 							updateStartAddress(routes, markers, tempRoute, startAdresseForm);
@@ -190,9 +181,26 @@ public class RouteAndMarkerHelpers {
 					tempRoute.seats = seats;
 					routes.save(tempRoute);
 				}
-			 }
-			 else{
-				waypoints.add(requestMap.get(key));
+			 }else{
+				 if(key.matches("wegpunkt.Select") && requestMap.get(key) != ""){
+
+					 //get the position of the waypoint
+					 int waypoint = Integer.parseInt(key.charAt(8)+"");
+					 Marker tempMarker = markers.findById(requestMap.get(key));
+					 if(!tempRoute.wegpunkte.get(waypoint).fetch()._id.equals(tempMarker._id)){
+						 //set the new waypoints
+						 if(fixedpoints.findById(tempRoute.wegpunkte.get(waypoint).fetch()._id) ==null){
+							 markers.delete(tempRoute.wegpunkte.get(waypoint).fetch()._id);
+						 }
+						 tempRoute.wegpunkte.set(waypoint, new DBRef<Marker, String>(tempMarker._id, Marker.class));
+						 tempRoute.wegpunkteForm.set(waypoint, tempMarker.name);
+						 routes.save(tempRoute);
+					 }
+				 }else{
+					 if(requestMap.get(key+"Select") == ""){
+						 waypoints.add(requestMap.get(key));
+					 }
+				 }
 			 }
 		}
 		
@@ -202,12 +210,14 @@ public class RouteAndMarkerHelpers {
 			updateWaypoints(tempRoute, waypoints);
 		}
 	}
+
+	
 	
 	/**
 	 * Method to update the waypoints for a given route.
 	 * @param route The route to update the waypoints for.
 	 * @param waypoints The waypoints submitted.
-	 * @throws AddressNotFoundException 
+	 * @throws AddressNotFoundException Costum exception to be thrown if a address cannot be found via Google.
 	 */
 	private void updateWaypoints(Route route, LinkedList<String> waypoints) throws AddressNotFoundException{
 		Promise<String> tempPromise;
@@ -262,7 +272,7 @@ public class RouteAndMarkerHelpers {
 	public Marker createNewMarkerFromString(Promise<String> addressString, String what) throws AddressNotFoundException{
 		 MarkerDB markersInstance = MarkerDB.getInstance();
 
-		JsonNode json = Json.parse(addressString.get());
+		JsonNode json = Json.parse(addressString.get(20000));
 
 
 		if(json.findValue("status").asText().equals("ZERO_RESULTS")){

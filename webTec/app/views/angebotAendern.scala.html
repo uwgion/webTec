@@ -30,13 +30,20 @@
 		                '_class -> "col-md-6"
 					)
 					@for(key <- 0 until Route.wegpunkte.size()){
-				    	<div class="waypoints"><div class="clearfix col-md-6"><label for=wegpunkt@{key}">Wegpunkt @{key+1}</label>
-						   	<div class="input"><input class="form-control" name="wegpunkte'+counter+'" id="wegpunkt@{key}" type="text" placeholder="Über Adresse" value="@{Route.wegpunkteForm.get(key)}">
+				    	<div class="waypoints">
+				    	<div class="clearfix col-md-6"><label for=wegpunkt@{key}">Wegpunkt @{key+1}</label>
+						   	<div class="input"><input class="form-control" name="wegpunkt@{key}" id="wegpunkt@{key}" type="text" placeholder="Über Adresse" value="@{Route.wegpunkteForm.get(key)}">
 						   	<span class="help-inline"></span><span class="help-block"></span></div>
-						   	</div><div class="clearfix col-md-6" id="wegpunkt@{key}Select_field"><label for="wegpunkt@{key}Select">Wegpunkt @{key+1}</label>
-						   	<div class="input" id="wegpunkte'+counter+'"Select>
-						   	<select class="form-control" id="wegpunkt@{key}Select" disabled="disabled"><option>test</option></select><span class="help-inline"></span><span class="help-block"></span></div></div>
-				    	</div>
+						   	</div>
+							@select(
+								angebotForm("wegpunkt"+(key)+"Select"),
+								options = options(fixedPoints),
+								'class -> "form-control",				
+								'_label -> {"Wegpunkt "+(key+1)},
+			                	'_default -> "Bitte auswählen.",
+				                '_class -> "col-md-6"
+							)
+					    	</div>
 					}
 					<div id="wegpunkte"></div>
 		            
@@ -104,8 +111,6 @@
     	$("input").each(function(key, value){
     		var text = $(value).val();
     		var id = $(value).attr('id');
-    		console.log(id);
-    		console.log($("#"+id+"Select"));
     		$("#"+id+"Select option:contains("+text+")").attr('selected', true);
     	});
     	//$("#startAdresseFormSelect option:contains('Radolfzell Bahnhof')").attr('selected', true);

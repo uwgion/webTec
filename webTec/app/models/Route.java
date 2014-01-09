@@ -55,7 +55,7 @@ public class Route extends Entity {
 	public void setTimeAndValidate(String time) throws ParseException {
 		//no strict seperation of model and logic here
 		//need to think about this
-		this.time = new DateAndTimeHelpers().parseDateAndTime(time);
+		this.time = new DateAndTimeHelpers().parseTime(time);
 		GregorianCalendar tempCalTime = new GregorianCalendar();
 		tempCalTime.setTimeZone(TimeZone.getTimeZone("UTC+1"));
 		tempCalTime.setTime(this.time);

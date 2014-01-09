@@ -3,6 +3,8 @@ package db;
 import java.util.Date;
 
 import models.Marker;
+
+import org.bson.types.ObjectId;
 import org.mongojack.DBCursor;
 
 import play.Logger;
@@ -53,4 +55,13 @@ public org.mongojack.DBCursor<Marker> findMarkersNear(double longitude,
 		double latitude, double distance) {
         	return findNative(q("lonLat", near(longitude, latitude, distance)));
 		}
+public Marker delete(String id) {
+	if(!FixedPointDB.getInstance().getAllFixedPoints().containsKey(id)){
+		Logger.info("llloeschen");
+		Logger.info(id);
+		
+		return getColl().findAndRemove(q("_id", new ObjectId( id) ));
+	}
+	return null;
+}
 }

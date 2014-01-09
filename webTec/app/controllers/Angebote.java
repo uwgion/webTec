@@ -13,11 +13,9 @@ import models.Request;
 import models.Route;
 import models.User;
 
-import org.mongojack.DBCursor;
 import org.mongojack.DBRef;
 
 import play.Logger;
-import play.Routes;
 import play.data.Form;
 import play.i18n.Lang;
 import play.mvc.Controller;
@@ -30,17 +28,11 @@ import views.html.angebotErstellen;
 import views.html.meineAngebote;
 import authenticators.Driver;
 import authenticators.Secured;
-
-import com.mongodb.BasicDBObject;
-
 import db.FixedPointDB;
 import db.MarkerDB;
 import db.RequestDB;
 import db.RouteDB;
 import db.UserDB;
-
-import com.googlecode.htmlcompressor.*;
-import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 /**
  * Class to create, update and destroy offers. Only accessible if logged in.
  *
@@ -157,6 +149,7 @@ public class Angebote extends Controller{
     	UserDB users = UserDB.getInstance();
 		ArrayList<Route> routesList = users.getRoutesForUser(sessionID);
 		ArrayList<Request> requestList = users.getRequestsForUser(sessionID, true);
+		
 		return ok(meineAngebote.render(routesList, requestList));
     }
     

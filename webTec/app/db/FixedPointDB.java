@@ -36,10 +36,11 @@ public class FixedPointDB extends Finder<FixedPoint>{
 	}
 	
 	public HashMap<String, String> getAllFixedPoints(){
+		MarkerDB markers = MarkerDB.getInstance();
 		JacksonDBCollection<FixedPoint, String> meh = getColl();
 		HashMap<String, String> result = new HashMap<String, String>();
 		for(FixedPoint fixedPoint: meh.find()){
-			Marker tempMarker = fixedPoint.marker.fetch();
+			Marker tempMarker = markers.findById(fixedPoint.markerId);
 			result.put(tempMarker._id, tempMarker.name);
 		}
 		

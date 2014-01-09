@@ -12,22 +12,22 @@
             @inputText(
                 suchForm("startAdresse"), 
                 '_label -> "Von", 
-                '_placeholder -> "Please choose a valid username.",
                 '_error -> suchForm.error("startAdresseError")
             )
             
             @inputText(
                 suchForm("zielAdresse"), 
                 '_label -> "Nach",
-                '_placeholder -> "A password must be at least 6 characters. ",
                 '_error -> suchForm.error("zielAdresseError")
             )
                   
             
         </fieldset>
         <div class="actions">
-			 <input type="submit" class="btn primary" value="Angebote suchen">
+			 <input type="submit" class="btn btn-default" value="Angebote suchen">
+			 @if((request.cookies.get("sessionID") == null) && (session.get("sessionID") == null)){
 	         <a href="@routes.Registration.showRegistrationForm" class="btn">Noch nicht regestriert?</a>
+	         }
 		</div>
     }
     <div id="result"></div>

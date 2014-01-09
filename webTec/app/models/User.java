@@ -8,7 +8,6 @@ import org.mongojack.DBRef;
 import org.mongojack.MongoCollection;
 
 import play.data.validation.Constraints;
-import play.data.validation.Constraints.MinLength;
 
 @MongoCollection(name = "users")
 public class User extends Entity{
