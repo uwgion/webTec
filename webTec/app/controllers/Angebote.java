@@ -206,7 +206,9 @@ public class Angebote extends Controller{
     	HashMap<String, String> requestMap = (HashMap<String, String>) requestData.data();
 		HashMap<String, String> fixedPoints = FixedPointDB.getInstance().getAllFixedPoints();
     	try{
-    		routeListCreator.updateRoute(id, requestMap, routes, markers, routesList);
+	        Route routeOnlyForDate = requestData.get();
+
+    		routeListCreator.updateRoute(id, requestMap, routes, markers, routesList,routeOnlyForDate);
     	}catch(AddressNotFoundException e){
     		flash("errors","Ungültige Adresse eingegeben.");
     		Route tempRoute = buildRequestedOffer(id);

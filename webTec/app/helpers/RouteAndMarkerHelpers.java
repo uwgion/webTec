@@ -133,13 +133,13 @@ public class RouteAndMarkerHelpers {
 	 */
 	public void updateRoute(String id, HashMap<String, String> requestMap,
 			RouteDB routes, MarkerDB markers,
-			List<DBRef<Route, String>> routesList) throws AddressNotFoundException, ParseException {
+			List<DBRef<Route, String>> routesList, Route routeOnlyForDate) throws AddressNotFoundException, ParseException {
 		LinkedList<String> waypoints = new LinkedList<String>();
 		FixedPointDB fixedpoints = FixedPointDB.getInstance();
 		//get our route
 		Route tempRoute=routes.findById(id);
 		//update date and time
-		dateHelper.updateTimeAndDate(routes, tempRoute, requestMap.get("dateForm"), requestMap.get("timeForm"));
+		dateHelper.updateTimeAndDate(routes, tempRoute, routeOnlyForDate, requestMap.get("timeForm"));
 		
 		//iterating over request necessary? Could get the specific keys, but would need to
 		//iterate over the request anyways for the waypoints.

@@ -57,16 +57,16 @@ public class Route extends Entity {
 		//need to think about this
 		this.time = new DateAndTimeHelpers().parseTime(time);
 		GregorianCalendar tempCalTime = new GregorianCalendar();
-		tempCalTime.setTimeZone(TimeZone.getTimeZone("UTC+1"));
+		tempCalTime.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
 		tempCalTime.setTime(this.time);
 		
 		GregorianCalendar tempCal = new GregorianCalendar();
-		tempCal.setTimeZone(TimeZone.getTimeZone("UTC+1"));
+		tempCal.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
 		tempCal.setTime(dateForm);
 
 		tempCal.set(Calendar.HOUR_OF_DAY,tempCalTime.get(Calendar.HOUR_OF_DAY));
 		tempCal.set(Calendar.MINUTE,tempCalTime.get(Calendar.MINUTE));
-		tempCal.add(Calendar.DATE,1);
+//		tempCal.add(Calendar.DATE,1);
 		
 		this.dateForm=tempCal.getTime();
 	}

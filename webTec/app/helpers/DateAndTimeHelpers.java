@@ -2,10 +2,10 @@ package helpers;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import play.Logger;
 import models.Route;
 import db.RouteDB;
 
@@ -20,6 +20,7 @@ public class DateAndTimeHelpers {
 	public Date parseTime(String time) throws ParseException{
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         df.setLenient(false);
+        
         GregorianCalendar temp = new GregorianCalendar();
         temp.setTime(df.parse(time));
         return temp.getTime();
@@ -49,22 +50,16 @@ public class DateAndTimeHelpers {
 	 * @param tempRoute The route to update.
 	 * @throws ParseException Exception to be thrown in case a date or time is not valid.
 	 */
-	public void updateTimeAndDate(RouteDB routes, Route tempRoute, String date, String time) throws ParseException {
-		Date tempTime = parseTime(time);
-
-		Date tempDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
-		Logger.info(tempDate.toGMTString());
-		Logger.info(tempTime.toGMTString());
-		if(tempDate.compareTo(tempRoute.dateForm) != 0){
-			tempRoute.dateForm=new SimpleDateFormat("yyyy-MM-dd").parse(date);
-			Logger.info("date!");
-
-			routes.save(tempRoute);
-		}
-		if(tempTime.compareTo(tempRoute.time) != 0){
+	public void updateTimeAndDate(RouteDB routes, Route tempRoute, Route routeOnlyForDate, String time) throws ParseException {
+		GregorianCalendar greg = new GregorianCalendar();
+		greg.add(Calendar.HOUR_OF_DAY, 1);
+		greg.setTime(tempRoute.dateForm);
+		tempRoute.dateForm = greg.getTime();
+		
+		if(routeOnlyForDate.dateForm.compareTo(tempRoute.dateForm) != 0){
+			tempRoute.dateForm=routeOnlyForDate.dateForm;
 			tempRoute.setTimeAndValidate(time);
 			tempRoute.timeForm=time;
-			Logger.info("dasdasd");
 			routes.save(tempRoute);
 		}
 	}
