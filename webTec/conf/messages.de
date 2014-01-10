@@ -1,2 +1,3 @@
 validation.required=Dieses Feld wird benötigt.
+error.required=Dieses Feld wird benötigt.
 form.error.invalid=Ungültige Anzahl.

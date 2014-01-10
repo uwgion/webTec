@@ -41,8 +41,8 @@ $(document).ready(function(){
     	html += '<div class="waypoints"><div class="clearfix col-md-6"><label for="wegpunkte'+counter+'">Über</label>';
     	html += '<div class="input"><input class="form-control" name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="Über Adresse">';
     	html += '<span class="help-inline"></span><span class="help-block"></span></div>'
-    	html += '</div><div class="clearfix col-md-6" id="wegpunkte'+counter+'Select_field"><label for="wegpunkte'+counter+'Select">Über</label><div class="input" id="wegpunkte'+counter+'"Select>';
-    	html += '<select class="form-control" id="wegpunkte'+counter+'Select" disabled="disabled">'+$('#startAdresseFormSelect').html()+'</select><span class="help-inline"></span><span class="help-block"></span></div></div>'
+    	html += '</div><div class="clearfix col-md-6" id="wegpunkte'+counter+'Select_field"><label for="wegpunkte'+counter+'Select">Über</label><div class="input">';
+    	html += '<select class="form-control" id="wegpunkte'+counter+'Select" name="wegpunkte'+counter+'Select">'+$('#startAdresseFormSelect').html()+'</select><span class="help-inline"></span><span class="help-block"></span></div></div>'
     	html += '</div>';
     	//append and keep inserted values (yay \o/)
     	$("#wegpunkte").append(html);

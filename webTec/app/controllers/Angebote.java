@@ -58,6 +58,8 @@ public class Angebote extends Controller{
      * Method to display the page where a drive can create an offer.
      * @return The Angebote page with a list of all markers in the database.
      */
+
+//	@Authenticated(Secured.class)
 	@With({Driver.class})
     public static Result  createOffer(){
 		Form<Route> form = Form.form(Route.class);
@@ -202,7 +204,8 @@ public class Angebote extends Controller{
     		Logger.info(requestData.toString());
     		return badRequest();
     	}
-    	
+		Logger.info(requestData.data().toString());
+
     	HashMap<String, String> requestMap = (HashMap<String, String>) requestData.data();
 		HashMap<String, String> fixedPoints = FixedPointDB.getInstance().getAllFixedPoints();
     	try{

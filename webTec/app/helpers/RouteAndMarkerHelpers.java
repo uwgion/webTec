@@ -68,21 +68,22 @@ public class RouteAndMarkerHelpers {
 	 * @throws AddressNotFoundException 
 	 * @throws ParseException 
 	 */
-	public Route createRouteFromSubmittedMarkers(HashMap<String, String> requestMap, Route routeOnlyForDate) throws AddressNotFoundException, ParseException{
+	public Route createRouteFromSubmittedMarkers(HashMap<String, String> requestMap, Route tempRoute) throws AddressNotFoundException, ParseException{
 	        MarkerDB markers = MarkerDB.getInstance();
 			
 	        //create our tempRoute
-	        Route tempRoute = new Route();
+//	        Route tempRoute = new Route();
 	        
 
-			tempRoute.dateForm=routeOnlyForDate.dateForm;
+//			tempRoute.dateForm=routeOnlyForDate.dateForm;
 			tempRoute.setTimeAndValidate(requestMap.get("timeForm"));
 			tempRoute.timeForm=requestMap.get("timeForm");
 			dateHelper.validateDateAndTime(tempRoute);
+//			Logger.info(routeOnlyForDate.seats + "sitze");
 	        //iterate over all addresses and get their latitude and longitude, then save those in a list
 	        for (String key : requestMap.keySet()) {
 	        	
-	        	if(key.equals("timeForm") || key.equals("dateForm")){
+	        	if(key.equals("timeForm") || key.equals("dateForm") || key.matches("wegpunkte.Select") || key.matches("seats")){
 	        		continue;
 	        	}
 	            Promise<String> resultPromise;
@@ -105,10 +106,8 @@ public class RouteAndMarkerHelpers {
 	            	} else if(key.equals("zielAdresseFormSelect") && requestMap.get("zielAdresseFormSelect") != ""){
 		            	tempRoute.zielAdresse = new DBRef<Marker, String>(markers.findById(requestMap.get(key))._id, Marker.class);	
 	            	}	            
-            	}else if(key.equals("seats")){
-			        tempRoute.seats = Integer.parseInt(requestMap.get("seats"));
-
-	            }else{
+	            	//TODO: need to implement waypoints for fixedpoints
+            	}else{
             		resultPromise = singleAddressStringToGoogleAddress(requestMap.get(key));
     	            tempMarker = createNewMarkerFromString(resultPromise, key);
 		        	DBRef<Marker, String> tempDBRef = new DBRef<Marker, String>(tempMarker._id, Marker.class);
@@ -135,7 +134,6 @@ public class RouteAndMarkerHelpers {
 			RouteDB routes, MarkerDB markers,
 			List<DBRef<Route, String>> routesList, Route routeOnlyForDate) throws AddressNotFoundException, ParseException {
 		LinkedList<String> waypoints = new LinkedList<String>();
-		FixedPointDB fixedpoints = FixedPointDB.getInstance();
 		//get our route
 		Route tempRoute=routes.findById(id);
 		//update date and time
@@ -164,9 +162,9 @@ public class RouteAndMarkerHelpers {
             	}
 			 }else if(key.equals("zielAdresseForm") || key.equals("zielAdresseFormSelect")){
 	            	if(key.equals("zielAdresseForm") && requestMap.get("zielAdresseFormSelect") == ""){
-		        		String startAdresseForm = requestMap.get(key);
-						if(!tempRoute.zielAdresse.fetch().name.equals(startAdresseForm)){
-							updateStartAddress(routes, markers, tempRoute, startAdresseForm);
+		        		String zielAdresseForm = requestMap.get(key);
+						if(!tempRoute.zielAdresse.fetch().name.equals(zielAdresseForm)){
+							updateDestinationAddress(routes, markers, tempRoute, zielAdresseForm);
 							routes.save(tempRoute);
 						}	
 	            	} else if(key.equals("zielAdresseFormSelect") && requestMap.get("zielAdresseFormSelect") != ""){
@@ -182,20 +180,9 @@ public class RouteAndMarkerHelpers {
 					routes.save(tempRoute);
 				}
 			 }else{
-				 if(key.matches("wegpunkt.Select") && requestMap.get(key) != ""){
+				 if(key.matches("wegpunkte.Select") && requestMap.get(key) != ""){
 
-					 //get the position of the waypoint
-					 int waypoint = Integer.parseInt(key.charAt(8)+"");
-					 Marker tempMarker = markers.findById(requestMap.get(key));
-					 if(!tempRoute.wegpunkte.get(waypoint).fetch()._id.equals(tempMarker._id)){
-						 //set the new waypoints
-						 if(fixedpoints.findById(tempRoute.wegpunkte.get(waypoint).fetch()._id) ==null){
-							 markers.delete(tempRoute.wegpunkte.get(waypoint).fetch()._id);
-						 }
-						 tempRoute.wegpunkte.set(waypoint, new DBRef<Marker, String>(tempMarker._id, Marker.class));
-						 tempRoute.wegpunkteForm.set(waypoint, tempMarker.name);
-						 routes.save(tempRoute);
-					 }
+					 updateWaypointsWithFixedPoint(requestMap.get(key), routes, markers, tempRoute, key);
 				 }else{
 					 if(requestMap.get(key+"Select") == ""){
 						 waypoints.add(requestMap.get(key));
@@ -209,6 +196,45 @@ public class RouteAndMarkerHelpers {
 			//set our updated waypoints.
 			updateWaypoints(tempRoute, waypoints);
 		}
+	}
+
+	/**
+	 * Method which is called in case a route to be updated needs to be updated with fixed waypoints.
+	 * Waypoints will be added or replaced.
+	 * @param fixedPointId The fixed point which needs to be added.
+	 * @param routes A RouteDB instance.
+	 * @param markers A MarkerDB instance.
+	 * @param tempRoute The route which needs to be updated.
+	 * @param key The key for the request.
+	 * @throws NumberFormatException Is thrown if the number cannot be parsed from the key.
+	 */
+	private void updateWaypointsWithFixedPoint(
+			String fixedPointId, RouteDB routes,
+			MarkerDB markers, Route tempRoute,
+			String key) throws NumberFormatException {
+		FixedPointDB fixedpoints = FixedPointDB.getInstance();
+
+		//get the position of the waypoint
+		 int waypointPoisition = Integer.parseInt(key.charAt(9)+"");
+
+		 Marker tempMarker = markers.findById(fixedPointId);
+		 //a new waypoint which is fixed waypoint? If so, just add and continue.
+		 Logger.info(tempRoute.wegpunkte.size()+" size");
+		 if(waypointPoisition >= tempRoute.wegpunkte.size()){
+			 tempRoute.wegpunkte.add(new DBRef<Marker, String>(tempMarker._id, Marker.class));
+			 tempRoute.wegpunkteForm.add(tempMarker.name);
+			 routes.save(tempRoute);
+		 }else{
+			 if(!tempRoute.wegpunkte.get(waypointPoisition).fetch()._id.equals(tempMarker._id)){
+				 //set the new waypoints
+				 if(fixedpoints.findById(tempRoute.wegpunkte.get(waypointPoisition).fetch()._id) ==null){
+					 markers.delete(tempRoute.wegpunkte.get(waypointPoisition).fetch()._id);
+				 }
+				 tempRoute.wegpunkte.set(waypointPoisition, new DBRef<Marker, String>(tempMarker._id, Marker.class));
+				 tempRoute.wegpunkteForm.set(waypointPoisition, tempMarker.name);
+				 routes.save(tempRoute);
+			 }
+		 }
 	}
 
 	

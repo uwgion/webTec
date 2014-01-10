@@ -9,7 +9,7 @@ GET     /meineAngebote              controllers.Angebote.myOffers()
 GET     /angebotErstellen           controllers.Angebote.createOffer()
 POST 	/angebotErstellen			controllers.Angebote.createRoute()
 GET     /angebotAnzeigen/:Id        controllers.Angebote.displayOffer(Id: String)
-POST    /angebotAnzeigen/:Id       controllers.Requests.createRequest(Id: String)
+POST    /angebotAnzeigen/:Id       	controllers.Requests.createRequest(Id: String)
 
 GET 	/angebotAendern/:Id			controllers.Angebote.changeOfferForm(Id: String)
 POST 	/angebotAendern/:Id			controllers.Angebote.changeOffer(Id: String)

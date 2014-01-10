@@ -5,7 +5,7 @@
 
 @main("HÃ¶riMit") {
 <div class="starter-template">
-    <h1>Mitfahrgelegenheit ändern</h1>
+    <h1>Mitfahrgelegenheit Ã¤ndern</h1>
 </div>
 
      @helper.form(action = routes.Angebote.changeOffer(Route._id), 'Id -> "changeForm", 'class -> "form-group col-md-8") {
@@ -26,13 +26,13 @@
 						options = options(fixedPoints),
 						'class -> "form-control",				
 						'_label -> "Von",
-	                	'_default -> "Bitte auswählen.",
+	                	'_default -> "Bitte auswÃ¤hlen.",
 		                '_class -> "col-md-6"
 					)
 					@for(key <- 0 until Route.wegpunkte.size()){
 				    	<div class="waypoints">
 				    	<div class="clearfix col-md-6"><label for=wegpunkt@{key}">Wegpunkt @{key+1}</label>
-						   	<div class="input"><input class="form-control" name="wegpunkt@{key}" id="wegpunkt@{key}" type="text" placeholder="Über Adresse" value="@{Route.wegpunkteForm.get(key)}">
+						   	<div class="input"><input class="form-control" name="wegpunkt@{key}" id="wegpunkt@{key}" type="text" placeholder="ï¿½ber Adresse" value="@{Route.wegpunkteForm.get(key)}">
 						   	<span class="help-inline"></span><span class="help-block"></span></div>
 						   	</div>
 							@select(
@@ -40,7 +40,7 @@
 								options = options(fixedPoints),
 								'class -> "form-control",				
 								'_label -> {"Wegpunkt "+(key+1)},
-			                	'_default -> "Bitte auswählen.",
+			                	'_default -> "Bitte auswÃ¤hlen.",
 				                '_class -> "col-md-6"
 							)
 					    	</div>
@@ -62,7 +62,7 @@
 						options = options(fixedPoints),
 						'class -> "form-control",				
 						'_label -> "Nach",
-	                	'_default -> "Bitte auswählen.",
+	                	'_default -> "Bitte auswÃ¤hlen.",
 		                '_class -> "col-md-6"
 					)
 					
@@ -86,18 +86,18 @@
 		            )
 		            @inputText(
 		                angebotForm("seats"), 
-						'placeholder -> "Verfügbare Sitzplätze",
+						'placeholder -> "VerfÃ¼gbare SitzplÃ¤tze",
 		                'class -> "form-control",
 		                'type -> "number",
 		                'max -> "9",
 		                'min -> "1",
-		                '_label -> "Sitzplätze", 
+		                '_label -> "SitzplÃ¤tze", 
 		                '_error -> angebotForm.error("seats"),
 		                '_help -> "",
 		                '_class -> "col-md-4"
 		            )
 		        <div class="actions col-md-8">
-					<input type="button" id="wegPunkteHinzufuegen" class="btn btn-default" value="Wegpunkte hinfzufügen."></button>
+					<input type="button" id="wegPunkteHinzufuegen" class="btn btn-default" value="Wegpunkte hinfzufï¿½gen."></button>
 					<input type="submit" class="btn btn-default" value="Mitfahrgelegenheit speichern.">
 				</div>
 		        </fieldset>
@@ -120,8 +120,8 @@
     $("#wegPunkteHinzufuegen").click(function(){
     	counter += 1;
     	var html = $("#wegpunkte").html();
-    	html += '<div class="clearfix form-group"><label for="wegpunkte'+counter+'">Über</label>';
-    	html += '<div class="input"><input class="form-control" name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="Über Adresse"></div>';
+    	html += '<div class="clearfix form-group"><label for="wegpunkte'+counter+'">ï¿½ber</label>';
+    	html += '<div class="input"><input class="form-control" name="wegpunkte'+counter+'" id="wegpunkte'+counter+'" type="text" placeholder="ï¿½ber Adresse"></div>';
     	html += '<span class="help-block">Required</span></div>';
 	   	$("#wegpunkte").html(html);
 

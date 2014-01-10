@@ -5,6 +5,7 @@ import play.libs.F;
 import play.libs.F.Promise;
 import play.mvc.Action.Simple;
 import play.mvc.Http.Context;
+import play.mvc.Security.Authenticated;
 import play.mvc.SimpleResult;
 import controllers.routes;
 import db.UserDB;
@@ -21,6 +22,7 @@ public class Driver extends Simple{
 	 * Method to test if a user is a driver or not.
 	 * 
 	 */
+	@Authenticated(Secured.class)
 	public Promise<SimpleResult> call(Context ctx) throws Throwable {
 		String sessionID = ctx.session().get("sessionID");
 		UserDB users = UserDB.getInstance();
