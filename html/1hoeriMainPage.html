@@ -1,34 +1,170 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="ISO-8859-1">
-	<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
-	<link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.css">
-	<title>H�ri Startseite</title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.css">
+<title>Höri Startseite</title>
+<link href="http://static.blablacar.com/assets/css/blablacar.css?1383232923" rel="stylesheet" type="text/css">
 </head>
 <body>
-	<header>
-			<div class="hero-unit">
-			  <h1>H�ri Mitfahrgelegenheit</h1>
-				  <p>fahr mit!</p>
-				  <p>
-				    <a class="btn btn-primary btn-large">
-				      Learn more
-				    </a>
-				  </p>
+
+	
+	<header class="site-header">
+		<div class="container">
+			<a href="/" class="logo">BlaBlaCar</a>
+
+			<nav class="site-btns pull-left">
+				<ul class="unstyled">
+					<li><a href="/mitfahrgelegenheit-finden" rel="nofollow"
+						class="btn-2action"> Suche </a> <span class="btn-separator">oder</span>
+						<a class="btn-edition" href="/fahrt-anbieten">Fahrt anbieten</a></li>
+				</ul>
+			</nav>
+
+			<div class="menu-local pull-right">
+				<div class="language">
+					<div class="btn-group">
+						<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+							<span class="flag de_de"></span> € <i class="caret"></i>
+						</a>
+						<ul class="dropdown-menu">
+							<li class="disabled"><a href="#" rel="nofollow"> <span
+									class="flag de_de"></span> Deutsch - (EUR)
+							</a></li>
+							<li class="divider"></li>
+							<li class="disabled"><a href="#" tabindex="-1">Sprache
+									wählen</a></li>
+							<li><a rel="nofollow" href="/" id="lang-de_DE"> <span
+									class="flag de_de"></span> Deutsch
+							</a></li>
+							<li><a rel="nofollow" href="http://www.blablacar.com/"
+								id="lang-en_GB"> <span class="flag en_gb"></span> English
+							</a></li>
+							<li><a rel="nofollow" href="http://www.blablacar.es/"
+								id="lang-es_ES"> <span class="flag es_es"></span> Español
+							</a></li>
+							<li><a rel="nofollow" href="http://www.covoiturage.fr/"
+								id="lang-fr_FR"> <span class="flag fr_fr"></span> Français
+							</a></li>
+							<li><a rel="nofollow" href="http://www.blablacar.it/"
+								id="lang-it_IT"> <span class="flag it_it"></span> Italiano
+							</a></li>
+							<li><a rel="nofollow" href="http://www.blablacar.nl/"
+								id="lang-nl_NL"> <span class="flag nl_nl"></span> Nederlands
+							</a></li>
+							<li><a rel="nofollow" href="http://www.blablacar.pl/"
+								id="lang-pl_PL"> <span class="flag pl_pl"></span> Polski
+							</a></li>
+							<li><a rel="nofollow" href="http://www.blablacar.pt/"
+								id="lang-pt_PT"> <span class="flag pt_pt"></span> Português
+							</a></li>
+							<li class="divider"></li>
+							<li class="disabled"><a href="#" tabindex="-1">Währung
+									wählen</a></li>
+							<li class="currency-symbols"><a rel="nofollow"
+								href="/i-pay-in-GBP"> £ GBP </a></li>
+							<li class="currency-symbols"><a rel="nofollow"
+								href="/i-pay-in-EUR"> € EUR </a></li>
+							<li class="currency-symbols"><a rel="nofollow"
+								href="/i-pay-in-PLN"> zl PLN </a></li>
+						</ul>
+					</div>
+				</div>
+
+
+				<div class="fb-container-header">
+					<div id="facebooklikebox"
+						class="fb-like fb_edge_widget_with_comment fb_iframe_widget">
+					</div>
+				</div>
 			</div>
-			<from>
-				<input name="von">
-				<input name="bis">
-			</from>
-			<div class="btn-group">
-				<button class="btn-info" value="Nachfrage">
-					Angebot
-				</button>
-				<button class="btn-success" name="Angebot">
-					Nachfrage
-				</button>
-			</div>
+
+
+			<nav class="site-menu pull-right ">
+				<ul>
+					<li><a href="/anmelden">Anmelden</a></li>
+					<li><a href="/login" class="login-link login-toggle">Einloggen</a>
+
+						<div class="login-container">
+							<div class="login">
+								<span class="login-arrow"></span>
+
+								<div class="text-intro"></div>
+
+								<form action="/login_check" method="POST">
+
+									<div class="fb-signin">
+										<a
+											href="https://www.facebook.com/dialog/oauth?client_id=123152947759014&amp;redirect_uri=http%3A%2F%2Fwww.blablacar.de%2F&amp;state=8142b467f306ed83a3387d080c20c9cd&amp;req_perms=email%2Cuser_birthday%2Cuser_education_history%2Cuser_hometown%2Cuser_interests%2Cuser_location%2Cuser_work_history%2Cpublish_actions&amp;next=http%3A%2F%2Fwww.blablacar.de%2Ffacebook%2Flogin_check?show_first_signin_popin=1"
+											class="btn-fb-large">Facebook-Anmeldung</a>
+									</div>
+
+
+									<p class="menu-separator">
+										<span>oder</span>
+									</p>
+
+									<div>
+										<label></label> <input type="text" class="login-email"
+											name="_username" placeholder="E-Mail-Adresse" />
+									</div>
+
+									<div>
+										<label></label> <input type="password" class="login-pass"
+											name="_password" placeholder="Kennwort" />
+									</div>
+
+									<div class="forget-pass">
+										<a href="/kennwort-vergessen" class="login-link"> Kennwort
+											vergessen </a>
+									</div>
+
+									<div>
+										<label for="remember_me"> <input type="checkbox"
+											id="remember_me" name="_remember_me" checked="checked">
+											Logindaten speichern
+										</label>
+									</div>
+
+									<div class="connexion">
+										<button type="submit" name="_submit"
+											class="btn-validation btn-large apply-btn-loader">
+											Einloggen</button>
+									</div>
+
+									<hr />
+
+									<div class="sigin-in">
+										<strong>Sie sind noch kein Mitglied?</strong> <br /> <a
+											href="/anmelden" class="login-link"> Kostenlos anmelden </a>
+									</div>
+								</form>
+							</div>
+						</div></li>
+					<li><a href="/wie-es-funktioniert" class="help">Wie es
+							funktioniert</a></li>
+				</ul>
+			</nav>
+		</div>
 	</header>
+
+	<div class="page-header">
+		<h1>
+			Mit-Höri <br><small>finde deine Höri Mitfahrgelegenheit!</small>
+		</h1>
+	</div>
+	
+	<form class="search-form" method="POST" action="/search-post">
+    <div class="from clearfix">
+        <input type="text" id="simple_search_from_name" name="simple_search[from][name]"    placeholder="Von" class="search-from geo-autocomplete" /><input type="hidden" id="simple_search_from_coordinates_latitude" name="simple_search[from][coordinates][latitude]" /><input type="hidden" id="simple_search_from_coordinates_longitude" name="simple_search[from][coordinates][longitude]" /><input type="hidden" id="simple_search_from_countryCode" name="simple_search[from][countryCode]" />
+    </div>
+    <div class="to clearfix">
+        <input type="text" id="simple_search_to_name" name="simple_search[to][name]"    placeholder="Nach" class="search-to geo-autocomplete" /><input type="hidden" id="simple_search_to_coordinates_latitude" name="simple_search[to][coordinates][latitude]" /><input type="hidden" id="simple_search_to_coordinates_longitude" name="simple_search[to][coordinates][longitude]" /><input type="hidden" id="simple_search_to_countryCode" name="simple_search[to][countryCode]" />
+    </div>
+    
+    <button class="home-button-search" type="submit">Suchen</button>
+</form>
+
 </body>
 </html>

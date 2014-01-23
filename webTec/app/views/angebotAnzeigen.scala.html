@@ -1,0 +1,66 @@
+@(Route:  Route)(requestForm: Form[Request])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("HÃ¶riMit") {
+<div class="starter-template">
+    <h1>Aktuelle Angebote</h1>
+</div>
+<div id="@{Route._id}" class="cold-md-12">
+	@_displayOffer(Route)("")("4")
+
+@Route.wegpunkteForm.add(0, Route.startAdresse.fetch().name)
+
+	<div class="col-md-4">
+     @helper.form(action = routes.Requests.createRequest(Route._id), 'Id -> "request", 'class -> "form") {
+       
+        <fieldset>
+            <legend>Anfrage verschicken</legend>
+	            @inputText(
+	                requestForm("seats"), 
+	                'placeholder -> "Benötigte Sitzplätze",
+	                'class -> "form-control",
+	                'type -> "number",
+	                'max -> Route.seats,
+	                'min -> "1",
+	                '_label -> "Sitzplätze", 
+	                '_error -> requestForm.error("seats"),
+	                '_class -> "form-group",
+   	                '_help -> ""
+	                
+	            )
+				@select(
+				   requestForm("startAddressForm"),
+				   options = options(Route.wegpunkteForm),
+				   'class -> "form-control",				
+				   '_label -> "Von",
+	                '_class -> "form-group",
+	                '_help -> ""
+				)
+			@{Route.wegpunkteForm.add(Route.zielAdresse.fetch().name);val meh =Route.wegpunkteForm.remove(0)}
+				@select(
+				   requestForm("destinationAddressForm"),
+				   options = options(Route.wegpunkteForm),
+	                'class -> "form-control", 
+				   '_label -> "Nach",
+				   '_class -> "form-group",			
+   	                '_help -> ""
+				)
+        </fieldset>
+        <div class="actions form-group">
+			<input type="submit" class="btn btn-default" id="abschicken" value="Mitfahrgelegenheit anfragen.">
+			<input type="hidden" value="@{Route._id}" class="omm_value-offer">
+		</div>
+
+    }		
+
+	</div>
+</div>
+	<script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjsbaoEWBxF2oxvLEenqLjERjfJICyyWg&sensor=true">
+	</script>
+ 	<script type="text/javascript" src="/assets/javascripts/omm_mapCanvases.js"></script>
+ 	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+ 	
+ }

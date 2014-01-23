@@ -1,0 +1,57 @@
+@(myRoutes:  ArrayList[Route])(myRequests: ArrayList[Request])
+
+@main("HöriMit") {
+
+@if(session.get("driver") == "true"){
+	<fieldset>
+	<legend>Angebotene Mitfahrgelegenheiten</legend>
+	<div id="omm_thema-table" class="panel-group">
+		
+		@for((key) <- myRoutes){
+			<div class="panel panel-default" id="@{key._id}">
+				<div class="panel-heading">
+				  <h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#omm_thema-table" href="#@{key._id}1">
+				     <span class="omm_von">Von:</span> @{key.startAdresse.fetch().name} <span class="omm_nach">Nach:</span> @{key.zielAdresse.fetch().name}
+				    </a>
+				  </h4>
+				</div>
+				<div class="panel-collapse collapse" id="@{key._id}1">
+					<div class="panel-body">
+							@_displayOffer(key)("owner")("6")	
+							</div>
+			 		</div>
+			 	</div>
+		 	</div>
+		}
+	</fieldset>
+
+	<div class="row"></div>
+}
+	<fieldset>
+	<legend>Angefragte Mitfahrgelegenheiten</legend>
+	<div id="omm_thema-table" class="panel-group">	
+		@for((key) <- myRequests){
+			<div class="panel panel-default" id="@{key.route.fetch()._id}">
+				<div class="panel-heading">
+				  <h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#omm_thema-table" href="#@{key._id}2">
+				     <span class="omm_von">Von:</span> @{key.route.fetch().startAdresse.fetch().name} <span class="omm_nach">Nach:</span> @{key.route.fetch().zielAdresse.fetch().name}
+				    </a>
+				  </h4>
+				</div>
+				<div class="panel-collapse collapse" id="@{key._id}2">
+					<div class="panel-body">
+							@_displayOffer(key.route.fetch())("")("6")	
+							</div>
+			 		</div>
+			 	</div>
+		 	</div>
+		}
+	</fieldset>
+<script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjsbaoEWBxF2oxvLEenqLjERjfJICyyWg&sensor=true">
+</script>
+ 	<script type="text/javascript" src="/assets/javascripts/omm_mapCanvases.js"></script>
+ 	<script type="text/javascript" src="/assets/javascripts/omm_offersPanel.js"></script>
+}

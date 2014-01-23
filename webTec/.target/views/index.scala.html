@@ -1,0 +1,69 @@
+@(suchForm: Form[AngebotSuchen])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("HoeriMit") {
+
+@helper.form(action = routes.AngeboteSuchen.angeboteSuchen) {
+        <fieldset>
+            <legend>Angebote suchen</legend>
+            
+            @inputText(
+                suchForm("startAdresse"), 
+                '_label -> "Von", 
+                '_error -> suchForm.error("startAdresseError")
+            )
+            
+            @inputText(
+                suchForm("zielAdresse"), 
+                '_label -> "Nach",
+                '_error -> suchForm.error("zielAdresseError")
+            )
+          
+        </fieldset>
+        <div class="actions">
+			 <input type="submit" class="btn btn-default" value="Angebote suchen" onclick="getAlert()">
+			 @if((request.cookies.get("sessionID") == null) && (session.get("sessionID") == null)){
+	         <a href="@routes.Registration.showRegistrationForm" class="btn">Noch nicht regestriert?</a>
+	         }
+		</div>	  
+		  		  
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANZ1Q7tCDs-DXRW3BRdUudw-X5AHVN3d4&sensor=false"></script>
+    <script>
+		function getAlert(){
+			var geocoder = new google.maps.Geocoder();
+		
+			//alert("this is an alert " + google.maps.GeocoderStatus.OK);
+		}
+	</script>
+    }
+
+  <!--<input id="startAdresse" type="text" placeholder="startAdresse"/>
+		<input id="startKoordinaten" type="text" placeholder="startKoordinaten"/>
+		<button id="getCoordinates2" onclick="codeAddress()">test button</button>
+		  
+		  
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANZ1Q7tCDs-DXRW3BRdUudw-X5AHVN3d4&sensor=false"></script>
+    <script>
+
+    var geocoder;
+    var map;
+    
+    	function codeAddress() {
+    		geocoder = new google.maps.Geocoder();
+    	
+    	  var address = document.getElementById('startAdresse').value;
+    	 
+    	  geocoder.geocode( {'address' : address}, function(results, status) {  
+   		  alert("2. Alert " + google.maps.GeocoderStatus.OK + " " + status);
+    	    if (status == google.maps.GeocoderStatus.OK) {
+    	    	alert(results[0].geometry.location + "hallo")
+    	    	// = "test";
+    	    } else {
+    	      alert('Geocode was not successful for the following reason: ' + status);
+    	    }
+    	  });
+    	}</script>
+    <div id="result"></div>	  -->  
+}

@@ -1,0 +1,38 @@
+@(Route:  Route)(what: String)(size: String)
+
+<div class="row">
+	
+	<div id="map-canvas@{Route._id}" class="col-md-@size map-canvas" style="height:400px;">
+	</div>
+	<div class="col-md-@size jumbotron" style="background-color:transparent; margin-bottom:0px">
+		<div class="omm_route-details">
+			<span class="omm_dateTime">Am @{Route.dateForm.format("EEEE")}, den @{Route.dateForm.format("dd.MM.yyyy")} um @{Route.dateForm.format("HH:mm")}</span><br/>
+			<span class="omm_von">Von:</span> @{Route.startAdresse.fetch().name} <br/>
+				@for(z <- 0 until Route.wegpunkteForm.size()){
+					Über: @Route.wegpunkteForm.get(z)<br/>
+				}
+			<span class="omm_nach">Nach:</span> @{Route.zielAdresse.fetch().name}<br/>
+			<span class="omm_seats">Freie Sitzplätze:</span> @{Route.seats}<br/>	
+		@if(what == "owner"){
+			@for(z <- 0 until Route.requests.size()){
+				@if(Route.requests.get(z).fetch().status.equals("Anfrage akzeptiert.")){
+					<span class="omm_people">Mitfahrer:</span> @{Route.requests.get(z).fetch().requestingUser.fetch().username}<br/>	
+				}
+			}
+		}
+		</div>
+		<div class="omm_start-end-waypoints">
+			<input type="hidden" class="omm_start-address" value="@{Route.startAdresse.fetch().latitude}/@{Route.startAdresse.fetch().longitude}">
+			<input type="hidden" class="omm_waypoints-address" value="@for(z <- 0 until Route.wegpunkte.size()){@Route.wegpunkte.get(z).fetch.latitude()
+							  /@Route.wegpunkte.get(z).fetch.longitude()//}">
+			<input type="hidden" class="omm_destination-address" value="@{Route.zielAdresse.fetch().latitude}/@{Route.zielAdresse.fetch().longitude}">
+		</div>
+		@if(what == "owner"){
+			<div class="actions">
+				<a href="@routes.Angebote.changeOfferForm(Route._id)" role="button"><input type="button" class="btn btn-default omm_update-entry" value="Eintrag ändern"></a>
+				<a href="@routes.Angebote.displayOffer(Route._id)" role="button"><input type="button" class="btn btn-default omm_update-entry" value="Eintrag änzeigen"></a>
+				<input type="button" class="btn btn-default omm_delete-entry" value="Mitfahrgelegenheit löschen.">
+			</div>
+		}
+		<input type="hidden" class="omm_value-offer" value="@{Route._id}">
+	</div>

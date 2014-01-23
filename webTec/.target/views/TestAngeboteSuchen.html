@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+			<input id="startAdresse" type="text" placeholder="startAdresse"/>
+			<input id="zielAdresse" type="text" placeholder="zielAdresse"/>
+   
+          	<button id="getCoordinates" onclick="codeAddress()">Gib Koordinaten aus</button>
+
+    <script>
+    
+    	function codeAddress() {
+    	  var startaddress = document.getElementById('startAdresseError').value;
+    	  var zieladress = document.getElementById('startAdresseError').value;
+    	  geocoder.geocode( { 'startAdresseError': address}, function(results, status) {
+    	    if (status == google.maps.GeocoderStatus.OK) {
+    	    	alert(results[0].geometry.location)
+    	      map.setCenter(results[0].geometry.location);
+    	      var marker = new google.maps.Marker({
+    	          map: map,
+    	          position: results[0].geometry.location
+    	      });
+    	    } else {
+    	      alert('Geocode was not successful for the following reason: ' + status);
+    	    }
+    	  });
+    	}
+    	</script>
+</body>
+</html>
