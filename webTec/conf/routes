@@ -14,6 +14,7 @@ POST    /angebotAnzeigen/:Id       	controllers.Requests.createRequest(Id: Strin
 GET 	/angebotAendern/:Id			controllers.Angebote.changeOfferForm(Id: String)
 POST 	/angebotAendern/:Id			controllers.Angebote.changeOffer(Id: String)
 DELETE 	/angebotErstellen/:Id		controllers.Angebote.destroyOffer(Id: String)
+POST	/angeboteSuchen             controllers.AngeboteSuchen.angeboteSuchen()
 GET 	/login						controllers.Login.showLoginForm()
 
 POST 	/login						controllers.Login.login()

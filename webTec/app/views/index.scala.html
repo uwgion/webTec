@@ -1,23 +1,27 @@
-@(suchForm: Form[AngebotSuchen])
+@(suchForm: Form[AngebotSuchen])(Routes: List[Route])
 
 @import helper._
 @import helper.twitterBootstrap._
 
 @main("HoeriMit") {
 
-@helper.form(action = routes.Login.login) {
+@helper.form(action =  routes.AngeboteSuchen.angeboteSuchen, 'class -> "col-md-4 form-group") {
         <fieldset>
             <legend>Angebote suchen</legend>
             
             @inputText(
                 suchForm("startAdresse"), 
-                '_label -> "Von", 
+				'class -> "form-control",				
+                '_label -> "Von",
+                '_help -> "", 
                 '_error -> suchForm.error("startAdresseError")
             )
             
             @inputText(
                 suchForm("zielAdresse"), 
+				'class -> "form-control",				
                 '_label -> "Nach",
+                '_help -> "",
                 '_error -> suchForm.error("zielAdresseError")
             )
                   
@@ -31,4 +35,15 @@
 		</div>
     }
     <div id="result"></div>
+    <br/>
+    <br/>
+   <div class="row">
+    	@for((key) <- Routes){
+    	
+			<a href="@routes.Angebote.displayOffer(key._id)" class="col-md-12">Von: @key.startAdresse.fetch().name Nach @key.zielAdresse.fetch().name um @{key.dateForm.format("HH:mm")}</a>
+    		<br/>
+    		<br/>
+    	}
+    </div>
+
 }

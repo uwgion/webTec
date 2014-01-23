@@ -3,6 +3,7 @@ import models.FixedPoint;
 import models.Marker;
 import play.Application;
 import play.GlobalSettings;
+import db.AngeboteSuchenDB;
 import db.DBConnect;
 import db.FixedPointDB;
 import db.MarkerDB;
@@ -16,6 +17,7 @@ public class Global extends GlobalSettings {
 		MarkerDB.init();
 		RouteDB.init();	
 		FixedPointDB.init();
+        AngeboteSuchenDB.init();
 		//create some test markers, aaaaaw yeeeeaaaah
 		Marker tempMarker = MarkerDB.getInstance().create(new Marker("fixedPoint", "Radolfzell Bahnhof", 47.7242629,8.9349472));
 		FixedPointDB fixedpoints = FixedPointDB.getInstance();

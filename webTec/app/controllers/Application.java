@@ -1,7 +1,12 @@
 package controllers;
 
 import helpers.RouteAndMarkerHelpers;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import models.AngebotSuchen;
+import models.Route;
 import models.User;
 
 import org.mongojack.DBCursor;
@@ -19,10 +24,12 @@ import db.UserDB;
 
 public class Application extends Controller {
 	static RouteAndMarkerHelpers routeListCreator = new RouteAndMarkerHelpers();
-	
+
     public static Result index() {
 		Form<AngebotSuchen> form = Form.form(AngebotSuchen.class);
-        return ok(index.render(form));
+        List<Route> allRoutesAsObject = new LinkedList<Route>();
+
+        return ok(index.render(form,allRoutesAsObject));
     }
 
     public static Result about(){
