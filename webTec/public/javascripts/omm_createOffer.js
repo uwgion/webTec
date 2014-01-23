@@ -2,6 +2,10 @@
  * 
  */
 $(document).ready(function(){
+	//set timepicker
+	$('#timeForm').timepicker({
+	    showPeriodLabels: false,
+	});
     //write selected text in our input field to make it look nicer
     //could disable the input field as well
 	$("#zielAdresseFormSelect").click(function(){
@@ -27,10 +31,10 @@ $(document).ready(function(){
 	});
 	
 	$("#startAdresseForm").change(function(){
-		$("#startAdresseFormSelect").val(this.getAttribute("Bitte auswählen."));
+		$("#startAdresseFormSelect").val(this.getAttribute("Bitte auswählen"));
 	});
 	$("#zielAdresseForm").change(function(){
-		$("#zielAdresseFormSelect").val(this.getAttribute("Bitte auswählen."));
+		$("#zielAdresseFormSelect").val(this.getAttribute("Bitte auswählen"));
 	});
 	
     //set counter for additional waypoints
@@ -47,8 +51,22 @@ $(document).ready(function(){
     	//append and keep inserted values (yay \o/)
     	$("#wegpunkte").append(html);
     	//select default value
-    	$("#wegpunkte"+counter+"Select option[value=1]").attr('selected', true);
-
+    	//$("#wegpunkte"+counter+"Select option[value=0]").attr('selected', true);
+		$("#wegpunkte"+counter+"Select").val(this.getAttribute("Bitte auswählen"));
+    	$("#wegpunkte"+counter+"Select").click(function(){
+    		var selectedText = $("#wegpunkte"+counter+"Select :selected").text();
+    		if(!$("#wegpunkte"+counter+"Select").children()[0].selected){
+    			$("#wegpunkte"+counter).val(selectedText);
+    		}else{
+    			if($("#wegpunkte"+counter).val() === ""){
+    				$("#wegpunkte"+counter).val("");
+    			}
+    		}
+    	});
+    	
+    	$("#wegpunkte"+counter).change(function(){
+    		$("#wegpunkte"+counter+"Select").val(this.getAttribute("Bitte auswählen"));
+    	});
     });
 	$(":submit").click(function(){
 		console.log("suchen");

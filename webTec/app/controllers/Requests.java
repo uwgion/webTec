@@ -84,10 +84,19 @@ public class Requests extends Controller{
 	    
 	    users.save(user);
 	    routes.save(route);
-	    
+    	flash("success","Anfrage erfolgreich verschickt!");
+
 		return redirect(controllers.routes.Requests.displayRequests());
 	}
 	
+	/**
+	 * Action which handles the processed request of a user.
+	 * This action will be called when the driver of an offer approves or 
+	 * disapproves of an request.
+	 * @param requestID	The id of the request to be handled.
+	 * @param what An integer value representing 0 for approval, 1 for disapproval.
+	 * @return The rendered request site.
+	 */
 	public static Result processRequest(String requestID, String what){
 
 		RequestDB requests = RequestDB.getInstance();
@@ -101,10 +110,14 @@ public class Requests extends Controller{
 			route.seats -= request.seats;
 			request.status = "Anfrage akzeptiert.";
 			routes.save(route);
+	    	flash("success","Anfrage akzeptiert!");
+
 			break;
 
 		case 1:
 			request.status = "Anfrage abgelehnt.";
+	    	flash("success","Anfrage abgelehnt!");
+
 			break;
 		}
 		

@@ -5,6 +5,8 @@ $(document).ready(function(){
     if(!$(document).find('div').hasClass("panel-group")){
 	    var eventID=$(".omm_value-offer").val();
 	    omm_mapCanvases.initialize(eventID);
+    }else{
+	    omm_mapCanvases.initialize("");
     }
 
 });

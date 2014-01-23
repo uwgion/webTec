@@ -25,7 +25,6 @@ public class Secured extends Security.Authenticator {
 		UserDB users = UserDB.getInstance();
 		User tempUser;
     	if(sessionCookie != null){
-    		Logger.info(sessionCookie.value());
 			tempUser = users.findByLoggedInHashKey(sessionCookie.value());
 			if(tempUser != null){
 				ctx.session().put("sessionID", sessionCookie.value());

@@ -83,7 +83,7 @@ public class RouteAndMarkerHelpers {
 	        //iterate over all addresses and get their latitude and longitude, then save those in a list
 	        for (String key : requestMap.keySet()) {
 	        	
-	        	if(key.equals("timeForm") || key.equals("dateForm") || key.matches("wegpunkte.Select") || key.matches("seats")){
+	        	if(key.equals("timeForm") || key.equals("dateForm") ||  key.matches("seats")){
 	        		continue;
 	        	}
 	            Promise<String> resultPromise;
@@ -108,12 +108,23 @@ public class RouteAndMarkerHelpers {
 	            	}	            
 	            	//TODO: need to implement waypoints for fixedpoints
             	}else{
-            		resultPromise = singleAddressStringToGoogleAddress(requestMap.get(key));
-    	            tempMarker = createNewMarkerFromString(resultPromise, key);
-		        	DBRef<Marker, String> tempDBRef = new DBRef<Marker, String>(tempMarker._id, Marker.class);
-		            //add our markers to our route
-		            tempRoute.wegpunkte.add(tempDBRef); 
-		            tempRoute.wegpunkteForm.add(tempMarker.name);
+					if(key.matches("wegpunkte.Select") && requestMap.get(key) != ""){
+						tempMarker = markers.findById(requestMap.get(key));
+			        	DBRef<Marker, String> tempDBRef = new DBRef<Marker, String>(requestMap.get(key), Marker.class);
+			            //add our markers to our route
+			            tempRoute.wegpunkte.add(tempDBRef); 
+			            tempRoute.wegpunkteForm.add(tempMarker.name);
+					}else{
+						if(requestMap.get(key+"Select") == ""){
+							resultPromise = singleAddressStringToGoogleAddress(requestMap.get(key));
+							tempMarker = createNewMarkerFromString(resultPromise, key);
+							DBRef<Marker, String> tempDBRef = new DBRef<Marker, String>(tempMarker._id, Marker.class);
+							//add our markers to our route
+							tempRoute.wegpunkte.add(tempDBRef); 
+							tempRoute.wegpunkteForm.add(tempMarker.name);
+			            }
+					}
+
 	            }                
 	        }
         return tempRoute;

@@ -26,7 +26,7 @@
 						options = options(fixedPoints),
 						'class -> "form-control",				
 						'_label -> "Von",
-	                	'_default -> "Bitte auswählen.",
+	                	'_default -> "Bitte auswÃ¤hlen",
 		                '_class -> "col-md-6"
 					)
 					<div id="wegpunkte"></div>
@@ -46,7 +46,7 @@
 						options = options(fixedPoints),
 						'class -> "form-control",				
 						'_label -> "Nach",
-	                	'_default -> "Bitte auswählen.",
+	                	'_default -> "Bitte auswÃ¤hlen",
 		                '_class -> "col-md-6"
 					)
 					
@@ -70,18 +70,18 @@
 		            )
 		            @inputText(
 		                angebotForm("seats"), 
-						'placeholder -> "Verfügbare Sitzplätze",
+						'placeholder -> "VerfÃ¼gbare SitzplÃ¤tze",
 		                'class -> "form-control",
 		                'type -> "number",
 		                'max -> "9",
 		                'min -> "1",
-		                '_label -> "Sitzplätze", 
+		                '_label -> "SitzplÃ¤tze", 
 		                '_error -> angebotForm.error("seats"),
 		                '_help -> "",
 		                '_class -> "col-md-4"
 		            )
 		        <div class="actions col-md-8">
-					<input type="button" id="wegPunkteHinzufuegen" class="btn btn-default" value="Wegpunkte hinfzufügen."></button>
+					<input type="button" id="wegPunkteHinzufuegen" class="btn btn-default" value="Wegpunkte hinfzufÃ¼gen."></button>
 					<input type="submit" class="btn btn-default" value="Mitfahrgelegenheit eintragen.">
 				</div>
 		        </fieldset>
@@ -90,10 +90,63 @@
 		<div class="col-md-8 form-group" style="height:630px" id="map-canvas"></div>
 
     </div>
-
+<div class="menu" style="display: none;"><ul><li>Button1</li><li>Button2</li><li>Button3</li></ul></div>
 <script type="text/javascript"
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjsbaoEWBxF2oxvLEenqLjERjfJICyyWg&sensor=true">
 </script>
  	<script type="text/javascript" src="/assets/javascripts/omm_createOffer.js"></script>
  	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+ 	<script type="text/javascript">
+ 	var map;
+ 	var inputCounter = 0;
+ 	var endCounter = inputCounter+1;
+ 	var markers = [];
+
+    function initialize() {
+        var mapOptions = {
+        center: new google.maps.LatLng(47.693934,8.946791),
+        zoom: 13,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+    	};
+        var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+		google.maps.event.addListener(map, 'click', function(event) {
+			placeMarker(event.latLng, map);
+		});
+		
+    }
+	function placeMarker(location, map) {
+		if(inputCounter === 0){
+			for (var i = 0; i < markers.length; i++ ) {
+				markers[i].setMap(null);
+			}
+			$("#startAdresseForm").val("");
+			$("#zielAdresseForm").val("");
+			markers.length = 0;
+		}
+		var marker = new google.maps.Marker({
+			position: location,
+			map: map
+		});
+		markers.push(marker);
+		var waypoint = $("#wegpunkte"+inputCounter);
+		console.log(endCounter+ "anfang ende");
+
+		if(inputCounter === 0){
+			$("#startAdresseForm").val(marker.getPosition());
+			inputCounter += 1;	
+		}else if(waypoint.length != 0){
+			$("#wegpunkte"+(inputCounter)).val(marker.getPosition());
+			inputCounter += 1;
+			endCounter += 1;
+			console.log(inputCounter);
+			console.log(endCounter);
+		}else if(endCounter === inputCounter){
+			$("#zielAdresseForm").val(marker.getPosition());
+			inputCounter = 0;
+			endCounter = inputCounter+1;
+		}
+	}
+    google.maps.event.addDomListener(window, 'load', initialize);
+        
+</script>
 }

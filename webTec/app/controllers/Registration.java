@@ -1,10 +1,15 @@
 package controllers;
 
 
+import java.util.GregorianCalendar;
+
 import models.User;
 
+import org.joda.time.LocalDate;
+import org.joda.time.Years;
 import org.mongojack.DBCursor;
 
+import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -15,7 +20,6 @@ import com.mongodb.BasicDBObject;
 import db.UserDB;
 
 /**
- * Created by Kazakor on 23.12.13.
  */
 public class Registration extends Controller{
 
@@ -24,9 +28,7 @@ public class Registration extends Controller{
 		return ok(registration.render(form));
 	}
 	
-	public static Result createUser(){
-		 
-		 
+	public static Result createUser(){ 
 	    Form<User> form = Form.form(User.class);
 	     
 	    form = form.bindFromRequest();
@@ -64,12 +66,24 @@ public class Registration extends Controller{
             	form.reject("username", "Benutzername schon vergeben");
             }
         }
+		// Check if the user should be a driver and is not 18
+        if(!form.hasErrors()) {
+        	LocalDate birthdate = LocalDate.parse(form.field("birthday").value());
+        	LocalDate now = new LocalDate();
+
+        	Years age = Years.yearsBetween(birthdate, now);
+        	Logger.info(birthdate.toString());
+        	if(form.field("driver").value().equals("true") && age.getYears() < 18){
+            	form.reject("birthday", "Fahrer müssen 18 Jahre alt sein!");
+            }
+        }
         if(form.hasErrors()) {
             return badRequest(registration.render(form));
 	     } else {
 	    	 User newUser = form.get();
 			 String loggedIn = Math.random()+"";
 			 newUser.loggedInHashKey = loggedIn;
+			 newUser.password = newUser.password.hashCode()+"a";
 		   	 users.create(newUser);          
 
 			 if(form.get().remember == true){

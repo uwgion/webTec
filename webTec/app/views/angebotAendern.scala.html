@@ -26,7 +26,7 @@
 						options = options(fixedPoints),
 						'class -> "form-control",				
 						'_label -> "Von",
-	                	'_default -> "Bitte auswählen.",
+	                	'_default -> "Bitte auswählen",
 		                '_class -> "col-md-6"
 					)
 					@for(key <- 0 until Route.wegpunkte.size()){
@@ -40,7 +40,7 @@
 								options = options(fixedPoints),
 								'class -> "form-control",				
 								'_label -> {"Wegpunkt "+(key+1)},
-			                	'_default -> "Bitte auswählen.",
+			                	'_default -> "Bitte auswählen",
 				                '_class -> "col-md-6"
 							)
 					    	</div>
@@ -62,7 +62,7 @@
 						options = options(fixedPoints),
 						'class -> "form-control",				
 						'_label -> "Nach",
-	                	'_default -> "Bitte auswählen.",
+	                	'_default -> "Bitte auswählen",
 		                '_class -> "col-md-6"
 					)
 					
@@ -75,6 +75,7 @@
 		                '_help -> "",
 		                '_class -> "col-md-4"
 		            )
+		            
 		            @inputDate(
 		                angebotForm("dateForm"), 
 		                'placeholder -> "Bitte ein Datum eingeben im Format tt.mm.yyyy",
@@ -97,8 +98,8 @@
 		                '_class -> "col-md-4"
 		            )
 		        <div class="actions col-md-8">
-					<input type="button" id="wegPunkteHinzufuegen" class="btn btn-default" value="Wegpunkte hinfzuf�gen."></button>
-					<input type="submit" class="btn btn-default" value="Mitfahrgelegenheit speichern.">
+					<input type="button" id="wegPunkteHinzufuegen" class="btn btn-default" value="Wegpunkte hinfzufügen"></button>
+					<input type="submit" class="btn btn-default" value="Mitfahrgelegenheit speichern">
 				</div>
 		        </fieldset>
     }

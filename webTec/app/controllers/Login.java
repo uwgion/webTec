@@ -28,10 +28,10 @@ public class Login extends Controller {
 	 
 	 public static Result login(){
 		  Form<User> form = Form.form(User.class);
-//		  DynamicForm form = form.bindFromRequest();
 		  form = form.bindFromRequest();
 		     
 		     if (form.hasErrors()) {
+
 		    	return badRequest(login.render(form));
 		     } else {
 				User formUser = form.get();
@@ -50,10 +50,10 @@ public class Login extends Controller {
 
 				if(cursor.count() != 1){
 					flash("errors","Falscher Benutzername oder Passwort.");
-					return badRequest(login.render(userForm)); 
-				}else if(!pw.equals(formUser.password)){
+					return badRequest(login.render(form)); 
+				}else if(!pw.equals(formUser.password.hashCode()+"a")){
 					flash("errors","Falscher Benutzername oder Passwort.");
-					return badRequest(login.render(userForm)); 
+					return badRequest(login.render(form)); 
 				}
 				String loggedIn = Math.random()+"";
 				User user = users.findById(id);
@@ -75,7 +75,8 @@ public class Login extends Controller {
 				cursor.close();
 
 				//return ok("Deine Eingaben: " +user.email +" " +user.password +" remember: " +user.remember);
-
+				flash("success", "Herzlich Willkommen " + user.username);
+				
 				return redirect(routes.Application.index());
 		     }
 	 }

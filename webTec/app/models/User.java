@@ -7,7 +7,9 @@ import java.util.List;
 import org.mongojack.DBRef;
 import org.mongojack.MongoCollection;
 
+import play.data.format.Formats;
 import play.data.validation.Constraints;
+import play.data.validation.Constraints.Required;
 
 @MongoCollection(name = "users")
 public class User extends Entity{
@@ -28,6 +30,10 @@ public class User extends Entity{
 	
 	public String loggedInHashKey;
 	public Date dateCreated;
+	
+	@Required
+	@Formats.DateTime(pattern="yyyy-MM-dd")
+	public Date birthday;
 	public boolean remember;
 	
 	public User(){

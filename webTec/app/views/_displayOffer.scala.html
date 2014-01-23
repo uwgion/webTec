@@ -9,10 +9,10 @@
 			<span class="omm_dateTime">Am @{Route.dateForm.format("EEEE")}, den @{Route.dateForm.format("dd.MM.yyyy")} um @{Route.dateForm.format("HH:mm")}</span><br/>
 			<span class="omm_von">Von:</span> @{Route.startAdresse.fetch().name} <br/>
 				@for(z <- 0 until Route.wegpunkteForm.size()){
-					‹ber: @Route.wegpunkteForm.get(z)<br/>
+					√ºber: @Route.wegpunkteForm.get(z)<br/>
 				}
 			<span class="omm_nach">Nach:</span> @{Route.zielAdresse.fetch().name}<br/>
-			<span class="omm_seats">Freie Sitzpl‰tze:</span> @{Route.seats}<br/>	
+			<span class="omm_seats">Freie Sitzpl√§tze:</span> @{Route.seats}<br/>	
 		@if(what == "owner"){
 			@for(z <- 0 until Route.requests.size()){
 				@if(Route.requests.get(z).fetch().status.equals("Anfrage akzeptiert.")){
@@ -29,9 +29,9 @@
 		</div>
 		@if(what == "owner"){
 			<div class="actions">
-				<a href="@routes.Angebote.changeOfferForm(Route._id)" role="button"><input type="button" class="btn btn-default omm_update-entry" value="Eintrag ‰ndern"></a>
-				<a href="@routes.Angebote.displayOffer(Route._id)" role="button"><input type="button" class="btn btn-default omm_update-entry" value="Eintrag ‰nzeigen"></a>
-				<input type="button" class="btn btn-default omm_delete-entry" value="Mitfahrgelegenheit lˆschen.">
+				<a href="@routes.Angebote.changeOfferForm(Route._id)" role="button"><input type="button" class="btn btn-default omm_update-entry" value="Eintrag √§ndern"></a>
+				<a href="@routes.Angebote.displayOffer(Route._id)" role="button"><input type="button" class="btn btn-default omm_update-entry" value="Eintrag anzeigen"></a>
+				<input type="button" class="btn btn-default omm_delete-entry" value="Mitfahrgelegenheit l√∂schen.">
 			</div>
 		}
 		<input type="hidden" class="omm_value-offer" value="@{Route._id}">

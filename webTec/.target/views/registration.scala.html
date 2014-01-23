@@ -48,6 +48,15 @@
                 '_help -> "",
                 '_error -> signupForm.error("password")
             )
+            
+            @inputDate(
+                signupForm("birthday"), 
+                'placeholder -> "Bitte ein Datum eingeben im Format tt.mm.yyyy",
+                'class -> "form-control",
+                '_label -> "Geburtstag", 
+                '_error -> signupForm.error("birthday"),
+                '_help -> ""
+            )            
             @checkbox(
                 signupForm("driver"), 
                 'class -> "checkbox", 
