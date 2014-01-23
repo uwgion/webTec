@@ -1,5 +1,5 @@
 [0m[[0mdebug[0m] [0mCopy resource mappings: [0m
-[0m[[0mdebug[0m] [0m	(C:\Users\uwe\git\webTec16\webTec\conf\application.conf,C:\Users\uwe\git\webTec16\webTec\target\scala-2.10\classes\application.conf)[0m
-[0m[[0mdebug[0m] [0m	(C:\Users\uwe\git\webTec16\webTec\conf\messages,C:\Users\uwe\git\webTec16\webTec\target\scala-2.10\classes\messages)[0m
-[0m[[0mdebug[0m] [0m	(C:\Users\uwe\git\webTec16\webTec\conf\messages.de,C:\Users\uwe\git\webTec16\webTec\target\scala-2.10\classes\messages.de)[0m
-[0m[[0mdebug[0m] [0m	(C:\Users\uwe\git\webTec16\webTec\conf\routes,C:\Users\uwe\git\webTec16\webTec\target\scala-2.10\classes\routes)[0m
+[0m[[0mdebug[0m] [0m	(C:\Users\uwe\git\webTec\webTec\conf\application.conf,C:\Users\uwe\git\webTec\webTec\target\scala-2.10\classes\application.conf)[0m
+[0m[[0mdebug[0m] [0m	(C:\Users\uwe\git\webTec\webTec\conf\messages,C:\Users\uwe\git\webTec\webTec\target\scala-2.10\classes\messages)[0m
+[0m[[0mdebug[0m] [0m	(C:\Users\uwe\git\webTec\webTec\conf\messages.de,C:\Users\uwe\git\webTec\webTec\target\scala-2.10\classes\messages.de)[0m
+[0m[[0mdebug[0m] [0m	(C:\Users\uwe\git\webTec\webTec\conf\routes,C:\Users\uwe\git\webTec\webTec\target\scala-2.10\classes\routes)[0m

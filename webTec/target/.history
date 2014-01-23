@@ -2,3 +2,6 @@ eclipse
 run
 compile
 run
+clean
+eclipse
+run

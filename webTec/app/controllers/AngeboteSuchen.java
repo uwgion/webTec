@@ -41,7 +41,7 @@ public class AngeboteSuchen extends Controller {
 		    	AngebotSuchen angebotSuchenModel = form.get();
 		    	AngeboteSuchenDB angebote = AngeboteSuchenDB.getInstance();	    	
 			
-				boolean test = false;
+				
 											
 					RouteAndMarkerHelpers help = new RouteAndMarkerHelpers();
 					Promise<String> promStartAdr = help.singleAddressStringToGoogleAddress(angebotSuchenModel.startAdresse);

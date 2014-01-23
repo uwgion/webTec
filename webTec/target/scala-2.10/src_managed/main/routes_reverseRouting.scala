@@ -1,6 +1,6 @@
-// @SOURCE:C:/Users/uwe/git/webTec16/webTec/conf/routes
+// @SOURCE:C:/Users/uwe/git/webTec/webTec/conf/routes
 // @HASH:0483305f8c8e1f0cc085493214265723b14cbac9
-// @DATE:Thu Jan 16 22:47:31 CET 2014
+// @DATE:Thu Jan 23 16:30:05 CET 2014
 
 import Routes.{prefix => _prefix, defaultPrefix => _defaultPrefix}
 import play.core._

@@ -24,6 +24,6 @@ POST 	/registration				controllers.Registration.createUser()
 GET 	/registration				controllers.Registration.showRegistrationForm()
 GET 	/meineAnfragen				controllers.Requests.displayRequests()
 POST 	/meineAnfragen/:Id/:what	controllers.Requests.processRequest(Id: String, what: String)
-GET     /assets/javascripts/routes          controllers.Application.javascriptRoutes()
+GET     /assets/javascripts/routes  controllers.Application.javascriptRoutes()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

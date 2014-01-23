@@ -1,7 +1,7 @@
 <classpath>
   <classpathentry kind="src" path="app" output=".target"/>
   <classpathentry kind="src" path="test" output=".target"/>
-  <classpathentry path="C:\Users\uwe\git\webTec16\webTec\target\scala-2.10\classes_managed" kind="lib"></classpathentry>
+  <classpathentry path="C:\Users\uwe\git\webTec\webTec\target\scala-2.10\classes_managed" kind="lib"></classpathentry>
   <classpathentry kind="lib" path="C:\play-2.2.1\framework\..\repository\cache\org.mongodb\mongo-java-driver\jars\mongo-java-driver-2.10.1.jar"/>
   <classpathentry kind="lib" path="C:\play-2.2.1\framework\..\repository\cache\org.mongojack\play-mongojack_2.10\jars\play-mongojack_2.10-2.0.0-RC2.jar"/>
   <classpathentry kind="lib" path="C:\play-2.2.1\framework\..\repository\cache\org.mongojack\mongojack\jars\mongojack-2.0.0-RC5.jar"/>
